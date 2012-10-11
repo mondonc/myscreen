@@ -1,0 +1,15 @@
+language: c
+script: "cd trunk ; make "
+#before_script: "make .pkg_cppcheck"
+#after_script:  another_command
+install: cppcheck
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq cppcheck
+notifications:
+  email:
+    on_success: always # default: change
+    on_failure: always # default: always
+compiler:
+  - clang
+  - gcc
