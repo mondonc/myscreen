@@ -1,5 +1,5 @@
 language: c
-script: "cd trunk ; make "
+script: "cd trunk ; make ; cd .. ; make cppcheck"
 #before_script: "make .pkg_cppcheck"
 #after_script:  another_command
 before_install:
