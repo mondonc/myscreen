@@ -1,0 +1,27 @@
+This work was packaged for Debian by:
+
+    Clément Mondon <clement.mondon@gmail.com> on Fri, 14 May 2010 21:22:14 +0200
+
+It was downloaded from http://www.clement-mondon.fr
+
+Upstream Author(s):
+
+    Clément Mondon <clement.mondon@gmail.com>
+
+Copyright:
+
+    <Copyright (C) 2009,2010,2011 Clément Mondon>
+
+License:
+    You are free to distribute this software under the terms of
+    the GNU General Public License.
+    On Debian systems, the complete text of the GNU General Public
+    License can be found in the file `/usr/share/common-licenses/GPL-3'.
+
+The Debian packaging is:
+
+    Copyright (C) 2010 Clément Mondon <clement.mondon@gmail.com>
+
+    and is licensed under the GPL version 3, 
+    see `/usr/share/common-licenses/GPL-3'.
+

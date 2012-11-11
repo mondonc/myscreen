@@ -1,0 +1,37 @@
+startup_message off
+vbell off
+msgwait 1
+
+# Define status 
+backtick 100 0 0 /usr/lib/myscreen/myscreen-stats
+
+hardstatus alwayslastline
+
+termcapinfo xterm* ti@:te@
+altscreen on
+
+# Log 10000 lines
+defscrollback 100000
+
+# Default windows
+bind c screen 1
+#bind 0 select 10
+screen -t MyScreen  
+
+register n "^a^c^aA"				
+bind ^k
+
+bind ^\
+
+bind \\ quit
+bind K kill
+bind I login on
+bind O login off
+bind } history
+
+# Window tabs, second to last line
+caption always " %{ kw}%?%-w%?%{r}%n %t%{kw}%?%+w%? %= %D%d/%m/%Y %0c:%s %{=b .} %H "
+
+# Status string, last line
+hardstatus string ' %100`'
+

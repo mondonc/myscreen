@@ -1,0 +1,23 @@
+Source: myscreen
+Section: misc
+Priority: extra
+Maintainer: Clement Mondon <clement.mondon@gmail.com>
+Build-Depends: debhelper (>= 7)
+Standards-Version: 3.8.4
+Homepage: http://www.clement-mondon.fr/myscreen
+
+Package: myscreen
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, screen (>= 4.0.3-11)
+Description: Tab system and system statistics for your terminal. 
+ MyScreen  is  a program that runs GNU/Screen with a tab system and system sta‐
+ tistics provided by myscreen-stats.   It  is  expected  to  consume  very  few
+ resources.
+ .
+ MyScreen  includes GNU/Screen configuration file and myscreen-stats, a program
+ that provides several statistics.  The configuration file of GNU/Screen allows
+ to enable hardstatus bar in the manner of a tab system of graphical terminals.
+ The  program  myscreen-stats  provides several informations like the number of
+ users connected, the uptime, the upload and download rates, the battery state,
+ the  wifi  quality, the loadaverage, the number of processes , the cpus rates,
+ the disks rates, the ram and swap percentages.

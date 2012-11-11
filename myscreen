@@ -1,0 +1,55 @@
+#!/bin/bash
+#
+# Copyright 2009,2010,2011 Clément Mondon <clement.mondon@gmail.com>
+#
+#	This file is part of project myscreen.
+#
+# myscreen is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# myscreen is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with myscreen.  If not, see http://www.gnu.org/licenses/. 
+#
+
+#SIGNAL
+SIG_REFRESH=USR1
+SIG_STOP=USR2
+RELOAD="restart"
+STOP="stop"
+MYSCREEN_STATS_RUNNING=`ps -C myscreen-stats -o pid --no-headers `
+CONF_FILE="/etc/myscreen-screenrc"
+
+#If always running, restart myscreen-stats instead
+if [ "${TERM}" = "screen" ] || [ "$1" == ${RELOAD} ] || [ "$1" == ${STOP} ] ; then
+
+	if [ -n "${MYSCREEN_STATS_RUNNING}" ] ; then
+
+		if [ "$1" == ${STOP} ] ; then
+			SIG=${SIG_STOP}
+			MSG="Stop"
+		else
+			SIG=${SIG_REFRESH}
+			MSG="Refresh"
+		fi
+
+		kill -${SIG} ${MYSCREEN_STATS_RUNNING}
+		echo "Signal ${MSG} (${SIG}) sent to" ${MYSCREEN_STATS_RUNNING}
+
+	else
+
+		echo "No myscreen-stats running"
+
+	fi
+
+else
+
+	screen -c ${CONF_FILE} "$@"
+
+fi

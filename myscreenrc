@@ -1,0 +1,54 @@
+# Version 0.9
+# Configuration file of myscreen
+
+################################################################################
+#  SYNTAX:                                                                     #
+#                                                                              #
+#    to activate a module      ->   module_name   OR   module_name = OPTION    #
+#    to desactivate a module   ->   comment it !                               #
+#                                                                              #
+#    If a module isn't mentioned, it's considerated as disable                 #
+#                                                                              #
+################################################################################
+
+# users : Number of users connected (run users command for details)
+users
+
+# uptime : Tell how long the system has been running 
+uptime
+
+# network : Network's rates
+# OPTIONS : auto, interface_name (like eth0, wlan0, ...)
+network = auto
+
+# battery : Battery state ( S[PERCENTAGE%] ; S can be "=Full, _=Discharging,~=Charging )
+battery
+
+# wifi : Wifi quality ( vRate=rate_dowload, ^rate=rate_upload )
+wifi
+
+# reboot : Reboot required (Display '@' when reboot is required)
+reboot
+
+# loadaverage : Loadaverage
+# OPTIONS : 1 or 5 or 15 (default is 1) to define time in minute (see man uptime for details)
+loadaverage = 1
+
+# procs : Number of processes
+processes
+
+# cpu : Cpu's rates
+cpu
+
+# disk : Total disks's rates (Read and Write)
+disks_access
+
+# Disk usage : output format : mount_point:%used (free)
+disks_usage
+
+# ram : Percentage of used ram (without cache)
+ram
+
+# swap : Percentage of used swap (if swapon)
+swap
+
