@@ -53,19 +53,10 @@ debug: compile
 compile: $(TARGET)
 	
 $(TARGET):	$(MODULE_LIST_H) $(MODULE_LIST_OBJ) $(MODULES_OBJ) $(MAIN_OBJ) 
-	$(CC) $(MODULES_OBJ) $(MODULE_LIST_OBJ) $(MAIN_OBJ) -o $(TARGET) $(LDFLAGS)
+$(CC): $(MODULES_OBJ) $(MODULE_LIST_OBJ) $(MAIN_OBJ) -o $(TARGET) $(LDFLAGS)
 
 help : dump ## Display help 
 		@grep '##' Makefile | grep -v "grep " | sed s/'##'/'\n    '/ | sed s/$$/'\n'/
-
-doc: ## Build html and latex doc, doxygen required
-	@mkdir -p doc
-	@doxygen doxygen.conf
-	@echo "#*#*#*#*#*#"
-	@echo "Documention generated in doc/"
-	@echo "Html : open index.html in doc/html/) (with javascript support )"
-	@echo "Latex : run make in doc/latex/ to obtain refman.pdf"
-	@echo "Man page : run man -l \"file\" in doc/man/man1/ to view man page"
 
 build-local-install: DESTDIR = $(HOME)/.myscreen
 build-local-install: CFLAGS += -DLOCAL
@@ -106,26 +97,6 @@ archive : realclean ## Create archive tar.gz in ../
 	@REP=$$(basename $$PWD) ; tar cvfz ../$(PACKAGE).tar.gz  *
 
 
-new-module: ## Used to create a template in modules/
-	@OLD=`ls -1 modules/ | head -n 1` ;\
-	echo "Please enter the new module name" ;\
-	read NEW ;\
-	if [ -z "$$NEW" ] || ls modules | grep "$$NEW" ; then echo "Error: Your module name can be ambigous" ; exit 1 ; fi ;\
-	cp -r modules/$$OLD modules/$$NEW ;\
-	cd modules/$$NEW ;\
-	mv $$OLD.h $$NEW.h ;\
-	mv $$OLD.c $$NEW.c ;\
-	sed -e "s/$$OLD/$$NEW/g" -i * ;\
-	sed -e "s/`echo $$OLD | tr '[:lower:]' '[:upper:]' `/`echo $$NEW | tr '[:lower:]' '[:upper:]'`/g" -i *  ;\
-	cd ../.. ;\
-	echo "New module : modules/$$NEW ; adding your module in configuration file ($(MYSCREEN_CONF))..." ;\
-	echo "\n$$NEW" >> $(MYSCREEN_CONF)
-
-
-%.o : %.c %.h
-	$(CC) -o $@ -c $< $(CFLAGS) 
-
-
 $(MODULE_LIST_H): $(MODULES_SRC:%.c=%.h)
 	@echo -n "Generating $(MODULE_LIST_H)..."
 	@echo '\n/* This file is auto-generated */\n\n#ifndef _MODULES_H\n#define _MODULES_H\n\n#include "myscreen-stats.h"\n' >$(MODULE_LIST_H)
@@ -144,11 +115,22 @@ $(MODULE_LIST_C): $(MODULES_SRC:%.c=%.h)
 	@echo 'void (*exit_mod[NB_MODULES])(const char * conf_line) = {' `ls -m modules | sed -e 's/\([a-z][a-z_]*\)/exit_\1/g'`  '};' >> $(MODULE_LIST_C)
 	@echo " [OK]"
 
+%.o : %.c %.h
+	$(CC) -o $@ -c $< $(CFLAGS) 
+
+
+BUILD_DEPENDENCIES = libmpc2 libgmp10 sed libc6-dev cpp-4.7 gcc-4.7 libselinux1 libmpfr4 make libacl1 locales libc6-i686 linux-libc-dev libattr1 binutils zlib1g libc6 coreutils gcc dash
+
+install-depencies:
+	apt-get -y install ${BUILD_DEPENDENCIES}
 
 #*#*#*#*#*#*#*#*#*#*#*#*#*#*#
 # Static analysis and proof #
- #*#*#*#*#*#*#*#*#*#*#*#*#*#*#
- # Packages : path_to_binary.package_name
+#*#*#*#*#*#*#*#*#*#*#*#*#*#*#
+
+
+
+# Packages : path_to_binary.package_name
 PACKAGES := /usr/bin/cppcheck.cppcheck /usr/bin/splint.splint /usr/bin/git.git /usr/bin/dch.devscripts /usr/bin/lftp.lftp
 PKG_BIN := $(basename $(PACKAGES))
 PKG_NAME_WITH_DOT := $(suffix $(PACKAGES))
@@ -169,7 +151,6 @@ $(PKG_ALL):
 $(PKG_BIN) : 
 	@echo "/!\ I can't find $@, trying to install it."
 	sudo apt-get -y install $(strip $(subst ., , $(suffix $(filter $@%, $(PACKAGES) ) ) ) )
-
 
 
 .PHONY: dump clean realclean help new-module cppcheck
