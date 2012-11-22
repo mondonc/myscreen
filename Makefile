@@ -121,7 +121,7 @@ $(MODULE_LIST_C): $(MODULES_SRC:%.c=%.h)
 
 BUILD_DEPENDENCIES = libmpc2 libgmp10 sed libc6-dev cpp-4.7 gcc-4.7 libselinux1 libmpfr4 make libacl1 locales libc6-i686 linux-libc-dev libattr1 binutils zlib1g libc6 coreutils gcc dash
 
-install-depencies:
+install-dependencies:
 	apt-get -y install ${BUILD_DEPENDENCIES}
 
 #*#*#*#*#*#*#*#*#*#*#*#*#*#*#
