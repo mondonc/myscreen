@@ -139,11 +139,11 @@ PKG_NAME := $(subst ., , $(PKG_NAME_WITH_DOT))
 
 # TODO : CLANG, splint, sparse
 static-analysis : cppcheck ## Static analysis of source code with cppcheck, splint
-	@echo "\nStandard output writed in $(LOG_STATIC)\n"
 
 cppcheck: .pkg_cppcheck
-	@echo `date -I` > $(LOG_STATIC)
-	cppcheck $(INCLUDES) --enable=all `find . -name *.c` >> $(LOG_STATIC) 
+	@echo -n "" > $(LOG_STATIC)
+	cppcheck $(INCLUDES) --enable=all `find . -name *.c` 1>/dev/null 2>>$(LOG_STATIC) 
+	@if ! [ "`cat $(LOG_STATIC) | wc -l`" = "0" ] ; then cat $(LOG_STATIC) ; return 1 ; fi
 
 $(PKG_ALL): 
 	make -s $(basename $(filter %$(strip $(subst .pkg_, , $@)), $(PACKAGES) ) )
