@@ -129,7 +129,6 @@ install-dependencies:
 #*#*#*#*#*#*#*#*#*#*#*#*#*#*#
 
 
-
 # Packages : path_to_binary.package_name
 PACKAGES := /usr/bin/cppcheck.cppcheck /usr/bin/splint.splint /usr/bin/git.git /usr/bin/dch.devscripts /usr/bin/lftp.lftp
 PKG_BIN := $(basename $(PACKAGES))
