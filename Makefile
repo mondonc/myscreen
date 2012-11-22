@@ -149,8 +149,8 @@ $(PKG_ALL):
 	make -s $(basename $(filter %$(strip $(subst .pkg_, , $@)), $(PACKAGES) ) )
 
 $(PKG_BIN) : 
-	@echo "/!\ I can't find $@, trying to install it."
-	sudo apt-get -y install $(strip $(subst ., , $(suffix $(filter $@%, $(PACKAGES) ) ) ) )
+	@echo "I can't find $@, trying to install it."
+	apt-get -y install $(strip $(subst ., , $(suffix $(filter $@%, $(PACKAGES) ) ) ) )
 
 
 .PHONY: dump clean realclean help new-module cppcheck
