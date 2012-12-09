@@ -1,3 +1,10 @@
+myscreen (0.8.4) stable; urgency=low
+
+  * Non-maintainer upload.
+  * stable version
+
+ -- Clément MONDON <clement.mondon@gmail.com>  Sun, 09 Dec 2012 20:47:57 +0100
+
 myscreen (0.8.6-3) unstable; urgency=low
 
   * Tsest 
