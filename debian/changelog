@@ -1,3 +1,10 @@
+myscreen (0.8.8) stable; urgency=low
+
+  * Non-maintainer upload.
+  * Test CI process 
+
+ -- Clément Mondon <clement@mondonc.org>  Mon, 18 Mar 2013 02:08:00 +0100
+
 myscreen (0.8.7) stable; urgency=low
 
   * Non-maintainer upload.
