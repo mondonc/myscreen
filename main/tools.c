@@ -125,10 +125,10 @@ int myprint_percentage_s(char * result, unsigned short percentage){
 /*
  * Print str1 to standard output
  */
-void myprint_s(const char * st1){
+/*void myprint_s(const char * st1){
   while ((*st1) != '\0')
     putchar(*(st1++));
-}
+}*/
 
 /*
  * Print str1 with a '\n' to standard output

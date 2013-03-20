@@ -166,7 +166,7 @@ char * init_network(char * confline){
 	strncpyclr(conf_line, confline, LINE_SIZE);
 
 	/* If AUTO option */
-	if ( strstr(conf_line, OPT_AUTO) != NULL || strlen(conf_line) == 0 ) {
+	if ( strstr(conf_line, OPT_AUTO) != NULL || *conf_line == '\0' ) {
 
 		/*Get interface*/
 		if ( (f=fopen(PROC_NET_ROUTE, "r")) != NULL){
@@ -185,7 +185,7 @@ char * init_network(char * confline){
 		}
 
 		/* Build result string */
-		if (strlen(interface) > 0) {
+		if (*interface != '\0') {
 			strcpy(network_result,"selected device: ");
 		} else {
 			strcpy(network_result,"no network found ");
