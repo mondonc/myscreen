@@ -1,55 +1,42 @@
-<!-- Copyright 2009,2010,2011 Clément Mondon -->
-<!-- This file is part of project myscreen.
+How to install
+===
 
-Myscreen is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+From source
+---
 
-Myscreen is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+### Normal user
 
-You should have received a copy of the GNU General Public License
-along with Myscreen.  If not, see http://www.gnu.org/licenses/. 
--->
+If you want to install MyScreen in your ${HOME}, you can download source and run :
 
-Myscreen project is hosted by <a href="http://www.gna.org">GNA</a> with Subversion. 
+ make local
+ make local-install
 
-<h1>Debian Package</h1>
 
-Repository :  <a href="http://svn.gna.org/svn/myscreen/build-area">http://svn.gna.org/svn/myscreen/build-area</a> :
-<iframe src='http://svn.gna.org/svn/myscreen/build-area' width=100% height=370 frameborder=0></iframe> 
-<br/>
-<br/>
-<br/>
+Debian package
+---
+Or, you can add the following line in your sources.list :
 
-You can add the following line in your sources.list:
-<pre>
-<!--deb http://svn.gna.org/svn/myscreen/build-area ./-->
-deb http://www.clement-mondon.fr/myscreen/apt ./
-</pre> 
+ deb http://svn.gna.org/svn/myscreen/build-area ./
 
-<h1>Sources</h1>
-<br/>
-Current version: <a href="http://svn.gna.org/svn/myscreen/trunk">http://svn.gna.org/svn/myscreen/trunk</a>.
-<br/>
-You can download it with :
-<pre>
-svn co svn://svn.gna.org/svn/myscreen/trunk
-</pre>
+Packages compilated to i386 and amd64 architectures.
 
-or other versions : 
 
-<iframe src='http://svn.gna.org/svn/myscreen/tags' width=100% height=250 frameborder=0></iframe> 
+How to use ?
+===
 
-<br/>
-<br/>
-<br/>
-<h1>Root repository</h1>
+Use of GNU/Screen
+---
 
-<a href="http://svn.gna.org/svn/myscreen/">http://svn.gna.org/svn/myscreen/</a>:
-<br/>
-<iframe src='http://svn.gna.org/svn/myscreen/' width=100% height=250 frameborder=0></iframe> 
-<br/>
+Myscreen uses GNU/Screen window manager with the same default shortkeys.
+
+### Shortkeys
+
+ C^A C : New tabs</li>
+ C^A A : Switch between two tabs </li>
+ C^A [0-9] : Go to tab [0-9]</li>
+ C^A " : Display a list of tabs</li>
+ C^A k : Close current tab</li>
+ C^A d : Detach GNU/Screen session (You can rattach it with [my]screen -r)</li>
+
+
+<?php include("manpage"); ?>
