@@ -1,42 +1,28 @@
 How to install
 ===
 
-From source
+From sources
 ---
 
-### Normal user
+Download sources from [Github](https://github.com/mondonc/myscreen)
 
-If you want to install MyScreen in your ${HOME}, you can download source and run :
+	make
+	make install
 
- make local
- make local-install
+### Normal user (non-root) installation
 
+If you want to install MyScreen in your ${HOME}, you can download sources and run :
 
-Debian package
----
-Or, you can add the following line in your sources.list :
-
- deb http://svn.gna.org/svn/myscreen/build-area ./
-
-Packages compilated to i386 and amd64 architectures.
+	make local
+	make local-install
 
 
-How to use ?
-===
-
-Use of GNU/Screen
+From Debian packages
 ---
 
-Myscreen uses GNU/Screen window manager with the same default shortkeys.
+Or, you can add the following lines in your sources.list :
 
-### Shortkeys
+	deb http://myscreen.mondonc.org/debian/ stable/$(ARCH)
+	deb http://myscreen.mondonc.org/debian/ testing/$(ARCH)
 
- C^A C : New tabs</li>
- C^A A : Switch between two tabs </li>
- C^A [0-9] : Go to tab [0-9]</li>
- C^A " : Display a list of tabs</li>
- C^A k : Close current tab</li>
- C^A d : Detach GNU/Screen session (You can rattach it with [my]screen -r)</li>
-
-
-<?php include("manpage"); ?>
+Packages are compilated for i386 and amd64 architectures.

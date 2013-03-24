@@ -13,50 +13,62 @@ processes.
 MyScreen includes a configuration of GNU/Screen window manager with a
 system status notifications and several statistics.
 
-Screenshot
+Screenshots
 ----------
 
 ### Running
 
-![Screenshot - MyScreen](http://mondonc.org/img/screenshot-myscreen.jpg) \
+![Screenshot - MyScreen](http://myscreen.mondonc.org/img/screenshot-myscreen.jpg) \
 
 ### Starting
 
-![Screenshot - MyScreen](http://mondonc.org/img/screenshot-myscreen-init.jpg)
+![Screenshot - MyScreen](http://myscreen.mondonc.org/img/screenshot-myscreen-init.jpg)
 
 
-Why use MyScreen
+Why using MyScreen
 ----------------
 
 MyScreen presents the same advantages than GNU/Screen. For instance, you
 can open several terminals with one screen session, if you do not have X
-or if you use a ssh connection.
+or if you use ssh.
 
 Furthermore, you can see immediately your system state :
-- Number of user connected
+
+- Number of users connected
 - Uptime
 - Network rates (download/upload)
-- Battery state
+- Battery average
+- Wifi quality
 - Loadaverage
 - Number of processes
 - CPU percentages (global + per core)
-- Disk usage (I/O) percentages
-- Disk use (capacity)
-- Memory usage
-- Swap usage
+- Disks access (I/O) percentages
+- Disks use (capacity)
+- Memory consumed
+- Swap consumed
 
 For more informations, see
-[Documentation](http://mondonc.org/github/myscreen-documentation.html)
+[Documentation](http://myscreen.mondonc.org/index.php?page=doc/manpage.md)
 
 Download
 --------
 
 ### Source
+
 Git repository : [Github](https://github.com/mondonc/myscreen)
 
 ### Debian packages
-TODO
 
-Anomalies, bugs or enhancement request
+	deb http://myscreen.mondonc.org/debian testing/$(ARCH)/
+	deb http://myscreen.mondonc.org/debian stable/$(ARCH)/
+
+See [Download page](http://myscreen.mondonc.org/index.php?page=doc/Install.md)
+
+
+Anomalies, bugs or enhancement requests
 -----
- [See the bugtracking system](https://github.com/mondonc/myscreen/issues) \
+
+ [Bugtracking system](https://github.com/mondonc/myscreen/issues) \
+
+
+

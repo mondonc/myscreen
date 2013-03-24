@@ -1,7 +1,7 @@
 Sources overview
 ===
 
-Tests and Continious integration
+Tests and Continuous integration
 ===
 
 Write a new module
