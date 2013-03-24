@@ -8,7 +8,7 @@ Homepage: http://www.clement-mondon.fr/myscreen
 
 Package: myscreen
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, screen (>= 4.0.3-11)
+Depends: libc6, screen (>= 4.0.3-11)
 Description: Tab system and system statistics for your terminal. 
  MyScreen  is  a program that runs GNU/Screen with a tab system and system sta‐
  tistics provided by myscreen-stats.   It  is  expected  to  consume  very  few

@@ -10,3 +10,8 @@
 *.lai
 *.la
 *.a
+
+# Special build
+myscreen-stats
+main/modules_list.c
+main/modules_list.h

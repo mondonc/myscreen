@@ -16,6 +16,16 @@ CFLAGS += -D_XOPEN_SOURCE=500
 LDFLAGS=
 CPPFLAGS=
 
+# MultiArch support (32/64)
+ifdef DEB_HOST_ARCH_BITS
+	ifeq ($(DEB_HOST_ARCH_BITS),32)
+		MARCH=-m$(DEB_HOST_ARCH_BITS)
+	endif
+	ifeq ($(DEB_HOST_ARCH_BITS),66)
+		MARCH=-m$(DEB_HOST_ARCH_BITS)
+	endif
+endif
+
 # Modules support
 MODULES_SRC := $(foreach dir, $(wildcard modules/*) , $(wildcard $(dir)/*.c) )   
 MODULES_OBJ := $(MODULES_SRC:%.c=%.o)
@@ -52,8 +62,8 @@ debug: compile
 #Compile target
 compile: $(TARGET)
 	
-$(TARGET):	$(MODULE_LIST_H) $(MODULE_LIST_OBJ) $(MODULES_OBJ) $(MAIN_OBJ) 
-	$(CC) $(MODULES_OBJ) $(MODULE_LIST_OBJ) $(MAIN_OBJ) -o $(TARGET) $(LDFLAGS)
+$(TARGET): $(MODULE_LIST_H) $(MODULE_LIST_OBJ) $(MODULES_OBJ) $(MAIN_OBJ) 
+	$(CC) $(MARCH) $(MODULES_OBJ) $(MODULE_LIST_OBJ) $(MAIN_OBJ) -o $(TARGET) $(LDFLAGS)
 
 help : dump ## Display help 
 		@grep '##' Makefile | grep -v "grep " | sed s/'##'/'\n    '/ | sed s/$$/'\n'/
@@ -116,7 +126,7 @@ $(MODULE_LIST_C): $(MODULES_SRC:%.c=%.h)
 	@echo " [OK]"
 
 %.o : %.c %.h
-	$(CC) -o $@ -c $< $(CFLAGS) 
+	$(CC) $(MARCH) -o $@ -c $< $(CFLAGS) 
 
 
 BUILD_DEPENDENCIES = sed libc6-dev make linux-libc-dev binutils libc6 coreutils gcc dash
