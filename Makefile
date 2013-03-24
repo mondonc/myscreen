@@ -128,9 +128,11 @@ $(MODULE_LIST_C): $(MODULES_SRC:%.c=%.h)
 %.o : %.c %.h
 	$(CC) $(MARCH) -o $@ -c $< $(CFLAGS) 
 
+manpage: myscreen.1
+myscreen.1 : doc/manpage.md
+	pandoc -s -t man doc/manpage.md -o myscreen.2
 
 BUILD_DEPENDENCIES = sed libc6-dev make linux-libc-dev binutils libc6 coreutils gcc dash
-
 install-dependencies:
 	apt-get -y install ${BUILD_DEPENDENCIES}
 
