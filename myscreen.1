@@ -1,180 +1,113 @@
-.\"                                      Hey, EMACS: -*- nroff -*-
-.\" First parameter, NAME, should be all caps
-.\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
-.\" other parameters are allowed: see man(7), man(1)
-.TH MYSCREEN 1 "July 6th, 2012"
-.\" Please adjust this date whenever revising the manpage.
-.\"
-.\" Some roff macros, for reference:
-.\" .nh        disable hyphenation
-.\" .hy        enable hyphenation
-.\" .ad l      left justify
-.\" .ad b      justify to both left and right margins
-.\" .nf        disable filling
-.\" .fi        enable filling
-.\" .br        insert line break
-.\" .sp <n>    insert n+1 empty lines
-.\" for manpage-specific macros, see man(7)
+.TH MYSCREEN 1 "" "MyScreen User Manuals"
 .SH NAME
-myscreen \- run GNU/Screen providing tab bar and several system statistics
-
+.PP
+myscreen - run GNU/Screen providing tab bar and several system
+statistics
 .SH SYNOPSIS
-.B myscreen 
-[
-.B restart 
-|
-.B stop 
-] [
-.B screen_options
-]
-
-.br
-.br
+.PP
+\f[B]myscreen\f[] [ \f[B]restart\f[] | \f[B]stop\f[] ] [
+\f[B]screen_options\f[] ]
 .SH DESCRIPTION
-.I MyScreen
-is a program that runs GNU/Screen adding a tab bar and running myscreen-stats in order to display system statistics.
-myscreen-stats is written in C and it is expected to consume very few resources.
-
-.I MyScreen
-includes one GNU/Screen configuration file and myscreen-stats binary.
-The configuration file of GNU/Screen allows to enable hardstatus bar (at the bottom of the screen) in the
-manner of tab support in certain graphical terminal emulators.
-.br
-The myscreen-stats program provides several information like
-the number of users connected, the uptime, the upload and download rates, the battery state, 
-the wifi quality, the loadaverage, the number of processes, the cpus rates, the disks rates,
-the ram and swap percentages.
-
-.br
-.B To configure myscreen, you should copy /etc/myscreenrc file to ~/.myscreenrc
-.br 
-
 .PP
-.SH "COMMANDS"
-.br
-.I MyScreen 
-has the following commands:
-.TP 5
-.TP 5
-.B restart:
-.br
-Restart generation of stats (reloading configuration file). 
-.TP 5
-.B stop:
-.br
-Stop generation of stats. 
-.TP 5
-.B screen_options:
-.br
-
-.SH "COMMAND-LINE OPTIONS"
-.br
-All options are passed to GNU/Screen (see screen(1) for details). 
-
-.SH "MODULES"
-.I MyScreen 
-includes 12 modules:
-.TP 5
-.TP 5
-.B Users:
-Displays the number of users connected (using
-.B getutent() 
-function). 
-.br
-.TP 5
-.B Uptime:
-Displays uptime of the system (using 
-.B sysinfo() 
-function).  
-.br
-.TP 5
-.B Network:
-Displays upload (^[rate] [unit]) and download rate (v[rate] [unit]). When myscreen starts or when you reload it, the selected device is displayed. 
-
-Rates are calculated with 
-.B /proc/net/dev 
-file and device is selected with 
-.B /proc/net/route 
-file.
-.br
-.TP 5
-.B Battery:
-Displays the battery level and charging state.
-
-S|PERCENTAGE% ; S can be a '"' (Full) without percentage, a '_' (Discharging), or a '~' (Charging). 
-
-Percentage and state are determinated with 
-.B /sys/class/power_supply/BAT0/uevent 
-file.
-.br
-.TP 5
-.B Wifi:
-Displays wifi signal quality percentage. 
-Quality is provided by 
-.B /proc/net/wireless
-file.
-.br
-.TP 5
-.B Reboot:
-Displays '@' (blinking if supported) if reboot is required.
-It tests existence of 
-.B /var/run/reboot-required 
-file. 
-.br
-.TP 5
-.B Loadaverage:
-Displays the load average. (using 
-.B sysinfo() 
-function)
-.br
-.TP 5
-.B Processes:
-Displays the number of processes. (using 
-.B sysinfo()
-) 
-.br
-.TP 5
-.B Cpu:
-Diplays cpu rates : average%(cpu0%,cpu1%,...). Percentages are calculated with 
-.B /proc/stat 
-file. Rates include user space and kernel mode cpu time.
-.br
-.TP 5
-.B Disk:
-Displays disks rates of reading and writing together. If no activity detected, it displays the device name. (using 
-.B /proc/diskstats 
-file)
-.br
-.TP 5
-.B Ram:
-Displays the percentage of used ram without cache. (using 
-.B sysinfo() 
-function)
-.br
-.TP 5
-.B Swap:
-Displays the percentage of used swap if activated. (using 
-.B sysinfo() 
-function)
-
-
-
-.SH FILES
+\f[I]MyScreen\f[] is a program that runs GNU/Screen adding a tab
+bar and running myscreen-stats in order to display system
+statistics.
+It is written in C and it is expected to consume very few
+resources.
+.PP
+\f[B]MyScreen\f[] includes one GNU/Screen configuration file and
+myscreen-stats binary.
+The configuration file of GNU/Screen allows to enable hardstatus
+bar (at the bottom of the screen) in the manner of tab support in
+certain graphical terminal emulators.
+.PP
+The myscreen-stats program provides several informations like the
+number of users connected, the uptime, the upload and download
+rates, the battery state, the wifi quality, the loadaverage, the
+number of processes, the cpus rates, the disks rates, the ram and
+swap percentages.
+.PP
+\f[B]To configure myscreen, you should copy /etc/myscreenrc file to ~/.myscreenrc\f[]
+.SH COMMANDS
+.PP
+\f[I]MyScreen\f[] accepts the following commands:
+.IP \[bu] 2
+\f[B]restart\f[]: Restart the generation of stats (reloading the
+configuration file).
+.IP \[bu] 2
+\f[B]stop\f[]: Stop the stats generation.
+.SH COMMAND-LINE OPTIONS
+.PP
+All options are passed to GNU/Screen (see screen(1) for details).
+.SH MODULES
+.PP
+\f[I]MyScreen\f[] is composed of modules:
+.IP \[bu] 2
+\f[B]Users\f[]: number of users connected (using
+\f[I]getutent()\f[]).
+.IP \[bu] 2
+\f[B]Uptime\f[]: uptime of the system (using
+\f[I]sysinfo()\f[]).
 .PD 0
-.IP /etc/myscreenrc
-configuration of
-.I myscreen
-.IP $HOME/.myscreenrc
-read instead of /etc/myscreenrc
-.IP /etc/myscreen-screenrc
-screen configuration file.
+.P
+.PD
 
-.SH SEE ALSO
-.BR screen (1),
-.br
-
-.SH AUTHORS
-MyScreen was written by Clément Mondon <clement.mondon@gmail.com>.
+.IP \[bu] 2
+\f[B]Network\f[]: upload (^[rate] [unit]) and download rates
+(v[rate] [unit]).
+When myscreen starts or when you reload it, the selected device is
+displayed.
+Rates are calculated with /proc/net/dev file and device is selected
+with /proc/net/route file.
+.IP \[bu] 2
+\f[B]Battery\f[]: battery level and charging state.
+\f[I]S|PERCENTAGE%\f[] ; S can be a `"' (Full) without percentage,
+a `_' (Discharging), or a `~' (Charging).
+Percentage and state are determinated with
+\f[I]/sys/class/power_supply/BAT0/uevent\f[] file.
+.IP \[bu] 2
+\f[B]Wifi\f[]: wifi signal quality percentage.
+Quality is provided by \f[I]/proc/net/wireless\f[] file.
+.IP \[bu] 2
+\f[B]Reboot\f[]: `\@' (blinking if supported) if a reboot is
+required.
+It tests the existence of \f[I]/var/run/reboot-required\f[] file.
+.IP \[bu] 2
+\f[B]Loadaverage\f[]: load average.
+(using \f[I]sysinfo()\f[] function)
+.IP \[bu] 2
+\f[B]Processes\f[]: number of processes.
+(using \f[I]sysinfo()\f[])
+.IP \[bu] 2
+\f[B]Cpu\f[]: cpu rates : \f[I]average%(cpu0%,cpu1%,\&...)\f[].
+Percentages are calculated with /proc/stat file.
+Rates include user space and kernel mode cpu time.
+.IP \[bu] 2
+\f[B]Disks access\f[]: rates (read & write).
+If there is no activity detected, it displays the device name.
+(using \f[I]/proc/diskstats\f[] file)
+.IP \[bu] 2
+\f[B]Disks used space\f[]: used space of mounted partitions.
+.IP \[bu] 2
+\f[B]Ram\f[]: percentage of used ram without cache.
+(using \f[I]sysinfo()\f[])
+.IP \[bu] 2
+\f[B]Swap\f[]: percentage of used swap if activated.
+(using \f[I]sysinfo()\f[])
+.SH FILES
 .PP
-This manual page was written by Clément Mondon <clement.mondon@gmail.com>,
-for the Debian project (and may be used by others).
+\f[B]/etc/myscreenrc\f[] configuration of \f[I]myscreen\f[]
+\f[B]$HOME/.myscreenrc\f[] read instead of /etc/myscreenrc
+\f[B]/etc/myscreen-screenrc\f[] screen configuration file.
+.SH SEE ALSO
+.PP
+\f[B]screen (1)\f[]
+.SH AUTHORS
+.PP
+MyScreen was first developed by Clément Mondon
+<clement.mondon@gmail.com>.
+.PP
+This manual page was written by Clément Mondon
+<clement.mondon@gmail.com>, for the Debian project (and may be used
+by others).
+
