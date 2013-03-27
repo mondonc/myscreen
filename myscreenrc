@@ -1,15 +1,13 @@
 # Version 0.9
 # Configuration file of myscreen
+#
+# SYNTAX:                                                                     
+#                                                                             
+# to activate a module      ->   module_name   OR   module_name = OPTION 
+# to desactivate a module   ->   comment it !
+# 
+# If a module isn't mentioned, it's considerated as disable
 
-################################################################################
-#  SYNTAX:                                                                     #
-#                                                                              #
-#    to activate a module      ->   module_name   OR   module_name = OPTION    #
-#    to desactivate a module   ->   comment it !                               #
-#                                                                              #
-#    If a module isn't mentioned, it's considerated as disable                 #
-#                                                                              #
-################################################################################
 
 # users : Number of users connected (run users command for details)
 users
