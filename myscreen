@@ -26,7 +26,7 @@ STOP="stop"
 MYSCREEN_STATS_RUNNING=`ps -C myscreen-stats -o pid --no-headers `
 CONF_FILE="/etc/myscreen-screenrc"
 
-#If always running, restart myscreen-stats instead
+#If running, restart myscreen-stats instead
 if [ "${TERM}" = "screen" ] || [ "$1" == ${RELOAD} ] || [ "$1" == ${STOP} ] ; then
 
 	if [ -n "${MYSCREEN_STATS_RUNNING}" ] ; then
