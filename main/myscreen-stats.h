@@ -35,7 +35,7 @@
 #include <sys/time.h>
 #include <sys/types.h>
 
-/*DEBUG MACROS ?*/
+/* DEBUG MACROS ?*/
 #ifdef DEBUG 
 #define IFDEBUG(instruction); instruction 
 #define IFDEBUG_PRINT(chaine); fputs(chaine, stdout); 
@@ -54,6 +54,14 @@
 #define DEBUG_MODULE(chaine,index,name,conf) /* no code */
 #define IFNDEBUG(instruction); instruction 
 #endif
+
+/* ONESHOT MACROS */
+#ifdef ONESHOT
+#define IFONESHOT(instruction); instruction 
+#else
+#define IFONESHOT(instruction); /*no code*/ 
+#endif
+
 
 /* To make unused-parameter enjoy */ 
 #ifdef __GNUC__

@@ -2,6 +2,7 @@
 # Clément Mondon
 
 PACKAGE=myscreen
+TARGET := myscreen-stats
 
 #External tools
 RM=rm -f
@@ -35,8 +36,6 @@ MODULE_LIST_H := main/modules_list.h
 MODULE_LIST_C := $(MODULE_LIST_H:%.h=%.c) 
 MODULE_LIST_OBJ := $(MODULE_LIST_H:%.h=%.o) 
 
-# Final Target
-TARGET := myscreen-stats
 
 #Configuration files
 SCREEN_CONF=myscreen-screenrc
@@ -58,6 +57,10 @@ default: compile ## Compile to packaging ( with NDEBUG flag == without assert() 
 #Build in DEBUG mode (with assert)
 debug: CFLAGS += -DDEBUG -g ## Compile in debug mode
 debug: compile 
+
+#Build in ONESHOT mode (used to report bug or CI)
+oneshot: CFLAGS += -DONESHOT ## Compile in oneshot mode
+oneshot: debug
 
 #Compile target
 compile: $(TARGET)

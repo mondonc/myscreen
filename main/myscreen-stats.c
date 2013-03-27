@@ -1,4 +1,4 @@
-/*Copyright 2009,2010,2011,2012 Clément Mondon <clement.mondon@gmail.com>
+/*Copyright 2009,2010,2011,2012,2013 Clément Mondon <clement.mondon@gmail.com>
 
 	This file is part of project myscreen.
 
@@ -26,11 +26,12 @@ extern void (*exit_mod[NB_MODULES])();    /* For each module, function to exit *
 
 /* Current configuration read by parse-config */
 char * (*current_conf[NB_MODULES])();
+char * (*exit_current_conf[NB_MODULES])();
 
 /* Multiple usages var */
 char line[LINE_SIZE + 1];
 
-/* Flag to drive loops */
+/* Flags to drive loops */
 int stats_loop; /* While TRUE, display stats */
 int main_loop;
 
@@ -86,9 +87,11 @@ static void exit_modules(){
 
 	int cpt;
 
+	cpt = 0;
 	/* For each module */
-	for (cpt=0 ; cpt<NB_MODULES ; cpt++) {
-		exit_mod[cpt]();
+	while (exit_current_conf[cpt] != 0) {
+		assert(cpt<NB_MODULES);
+		exit_current_conf[cpt++]();
 	}
 }
 
@@ -122,6 +125,8 @@ static void loop_stat(){
 
 		/* Display END and wait between two stats's generation*/
 		(void) end_wait();
+
+		IFONESHOT(stats_loop = FALSE);
 	}
 }
 
@@ -161,6 +166,9 @@ int main (/*int argc, char ** argv*/)
 			/* Modules's exit calls */
 			DEBUG_INFO("Exit of all modules")
 			exit_modules();
+
+			IFONESHOT(exit(EXIT_SUCCESS));
+
 		}
 
 		/* Stopped, waiting new signal setting main_loop at TRUE */
