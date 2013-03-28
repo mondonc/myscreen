@@ -1,4 +1,4 @@
-/*Copyright 2009,2010,2011 Clément Mondon <clement.mondon@gmail.com>
+/*Copyright 2009-2013 Clément Mondon <clement.mondon@gmail.com>
 
 	This file is part of project myscreen.
 
@@ -23,18 +23,20 @@
  * Display battery state and percentage of charge
  */
 
-extern char line[]; /*Read line*/
-static char battery_result[BATTERY_RESULT_SIZE]; /*Returned result */
-static int time_cpt; /* To time elapsed*/
+extern char line[]; /* Read line*/
+static char battery_result[BATTERY_RESULT_SIZE]; /* Returned result */
+static int time_cpt; /* To time elapsed */
 
-/*Read file of path "battery" and build result string*/
+/*
+ * Read file of path "battery" and build result string
+ */
 static void calculate_battery(char * battery_result, const char * battery){
 
 	long int charge_full;
 	long int charge_now;
 	char * status; /* (POWER_DISCHARGING | POWER_CHARGING | POWER_FULL) */
 	FILE * f; /*Current file*/
-	char * ptr;
+	/*char * ptr;*/
 	unsigned int percentage;
 
 	status = "";
@@ -50,7 +52,7 @@ static void calculate_battery(char * battery_result, const char * battery){
 		return ;
 	}
 
-	/*It is supposed that lines are corretly ordoned */
+	/*It is supposed that lines are correctly ordoned */
 	while (fgets(line, LINE_SIZE, f) != NULL){
 
 		/*Determine status (POWER_DISCHARGING | POWER_CHARGING | POWER_FULL) */
@@ -61,18 +63,25 @@ static void calculate_battery(char * battery_result, const char * battery){
 			status = line;
 			while ( ( *(status++) ) != '=' );
 
-			if (!strcmp(status,POWER_DISCHARGING)){
+			assert(strlen(POWER_DISCHARGING) == POWER_DISCHARGING_LEN);
+			assert(strlen(POWER_CHARGING) == POWER_CHARGING_LEN);
+			assert(strlen(POWER_FULL) == POWER_FULL_LEN);
+
+			if (!strncmp(status, POWER_DISCHARGING, POWER_DISCHARGING_LEN)){
 				battery_result[0]='_';				
 
-			} else 	if (!strcmp(status,POWER_CHARGING)){
+			} else 	if (!strncmp(status, POWER_CHARGING, POWER_CHARGING_LEN)){
 				battery_result[0]='~';				
 
-			}	else 	if (!strcmp(status,POWER_FULL)){ /*If full, don't calculate percentage*/
+			}	else 	if (!strncmp(status, POWER_FULL, POWER_FULL_LEN)){ /*If full, don't calculate percentage*/
 
-				assert(BATTERY_RESULT_SIZE>=3);
+				assert(BATTERY_RESULT_SIZE >= 3);
+
 				battery_result[0]='"';				
 				battery_result[1]=' ';				
 				battery_result[2]='\0';
+
+				assert(strlen(battery_result) <= BATTERY_RESULT_SIZE);
 
 				if (fclose(f) == EOF){
 						perror("Closing Battery file ");
@@ -86,17 +95,19 @@ static void calculate_battery(char * battery_result, const char * battery){
 		}
 
 		/*Determine charge_full*/
-		if (charge_full == 0 && strstr(line, POWER_SUPPLY_CHARGE_FULL) != NULL){
-			ptr = line;
-			while ( ( *(ptr++) ) != '=' );
-			charge_full = strtol(ptr, NULL, 10);
+		if (charge_full == 0 && strncmp(line, POWER_SUPPLY_CHARGE_FULL, POWER_SUPPLY_CHARGE_FULL_LEN) == 0){
+			/*ptr = line;*/
+			/*while ( ( *(ptr++) ) != '=' );*/
+			/*ptr += POWER_SUPPLY_CHARGE_FULL_LEN;*/
+			charge_full = strtol((line + POWER_SUPPLY_CHARGE_FULL_LEN), NULL, 10);
 		}
 
 		/*Determine charge_now*/
-		if (charge_now == 0 && strstr(line, POWER_SUPPLY_CHARGE_NOW) != NULL){
-			ptr = line;
-			while ( ( *(ptr++) ) != '=' );
-			charge_now = strtol(ptr, NULL, 10);
+		if (charge_now == 0 && strncmp(line, POWER_SUPPLY_CHARGE_NOW, POWER_SUPPLY_CHARGE_NOW_LEN) == 0 ){
+			/*ptr = line;*/
+			/*while ( ( *(ptr++) ) != '=' );*/
+			/*ptr += POWER_SUPPLY_CHARGE_NOW_LEN;*/
+			charge_now = strtol((line + POWER_SUPPLY_CHARGE_NOW_LEN), NULL, 10);
 		}
 	}
 
@@ -119,7 +130,9 @@ static void calculate_battery(char * battery_result, const char * battery){
 	(void) myprint_percentage_s(&battery_result[2], percentage);
 }
 
-/*BATTERY*/
+/*
+ * BATTERY : Main function
+ */
 char * battery(){
 
 	if (time_cpt == 0){
