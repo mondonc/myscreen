@@ -1,15 +1,16 @@
 #!/bin/make -f
+# This Makefile is part of myscreen project, under GPLv3
 # Clément Mondon
 
 PACKAGE=myscreen
 TARGET := myscreen-stats
 
-#External tools
+# External tools
 RM=rm -f
 DOC=doc
 LOG_STATIC := log-static-analysis
 
-#Compilation 
+# Compilation 
 CC=gcc
 INCLUDES = -I main/ -I modules/
 CFLAGS = $(INCLUDES) -Wall -Werror -Wextra -ansi -pedantic
@@ -37,56 +38,40 @@ MODULE_LIST_C := $(MODULE_LIST_H:%.h=%.c)
 MODULE_LIST_OBJ := $(MODULE_LIST_H:%.h=%.o) 
 
 
-#Configuration files
+# Configuration files
 SCREEN_CONF=myscreen-screenrc
 MYSCREEN_CONF=myscreenrc
 
-#Install 
+# Install 
 BIN_STATS=$(DESTDIR)/usr/lib/myscreen
 BIN_MYSCREEN=$(DESTDIR)/usr/bin/
 EXEC=myscreen
 
-#*#*#*#*#*#*#
-#* Targets *#
-#*#*#*#*#*#*#
+#
+# TARGETS
+#
 
-#Build Target
+# Build Target
 default: CFLAGS += -DNDEBUG #To remove all asserts in final code
 default: compile ## Compile to packaging ( with NDEBUG flag == without assert() )
 
-#Build in DEBUG mode (with assert)
+# Build in DEBUG mode (with assert)
 debug: CFLAGS += -DDEBUG -g ## Compile in debug mode
 debug: compile 
 
-#Build in ONESHOT mode (used to report bug or CI)
+# Build in ONESHOT mode (used to report bug or CI)
 oneshot: CFLAGS += -DONESHOT ## Compile in oneshot mode
 oneshot: debug
 
-#Compile target
+# Compile target
 compile: $(TARGET)
 	
 $(TARGET): $(MODULE_LIST_H) $(MODULE_LIST_OBJ) $(MODULES_OBJ) $(MAIN_OBJ) 
 	$(CC) $(MARCH) $(MODULES_OBJ) $(MODULE_LIST_OBJ) $(MAIN_OBJ) -o $(TARGET) $(LDFLAGS)
 
+# Help
 help : dump ## Display help 
 		@grep '##' Makefile | grep -v "grep " | sed s/'##'/'\n    '/ | sed s/$$/'\n'/
-
-build-local-install: DESTDIR = $(HOME)/.myscreen
-build-local-install: CFLAGS += -DLOCAL
-build-local-install: pre-build-local-install realclean $(TARGET) install ## Compile and install in home directory  
-	sed  -e 's&CONF_FILE=.*&CONF_FILE=$(DESTDIR)/etc/$(SCREEN_CONF)&' -i $(BIN_MYSCREEN)/$(EXEC)
-	sed  -e 's&/usr/lib/myscreen/myscreen-stats&$(BIN_STATS)/$(TARGET)&' -i $(HOME)/.myscreen/etc/$(SCREEN_CONF)
-	@if grep  'PATH=$${PATH}:$${HOME}/.myscreen/usr/bin' $${HOME}/.bashrc ; then \
-	echo ".bashrc is updated"  ;\
-	else \
-	echo "update"  ;\
-	echo 'PATH=$${PATH}:$${HOME}/.myscreen/usr/bin' >> $${HOME}/.bashrc ;\
-	fi
-	export PATH=$${PATH}:$${HOME}/.myscreen/usr/bin
-
-
-pre-build-local-install: 
-	mkdir -p $(DESTDIR)
 
 install: $(TARGET) ##Install myscreen
 		install -d $(DESTDIR)/etc/
@@ -109,7 +94,25 @@ archive : realclean ## Create archive tar.gz in ../
 	#@REP=$$(basename $$PWD) ; cd ../ ; tar cvfz $(TARGET)-`date +%Y-%m-%d-%H-%M`.tar.gz  $${REP}/*
 	@REP=$$(basename $$PWD) ; tar cvfz ../$(PACKAGE).tar.gz  *
 
+build-local-install: DESTDIR = $(HOME)/.myscreen
+build-local-install: CFLAGS += -DLOCAL
+build-local-install: pre-build-local-install realclean $(TARGET) install ## Compile and install in home directory  
+	sed  -e 's&CONF_FILE=.*&CONF_FILE=$(DESTDIR)/etc/$(SCREEN_CONF)&' -i $(BIN_MYSCREEN)/$(EXEC)
+	sed  -e 's&/usr/lib/myscreen/myscreen-stats&$(BIN_STATS)/$(TARGET)&' -i $(HOME)/.myscreen/etc/$(SCREEN_CONF)
+	@if grep  'PATH=$${PATH}:$${HOME}/.myscreen/usr/bin' $${HOME}/.bashrc ; then \
+	echo ".bashrc is updated"  ;\
+	else \
+	echo "update"  ;\
+	echo 'PATH=$${PATH}:$${HOME}/.myscreen/usr/bin' >> $${HOME}/.bashrc ;\
+	fi
+	export PATH=$${PATH}:$${HOME}/.myscreen/usr/bin
 
+
+pre-build-local-install: 
+	mkdir -p $(DESTDIR)
+
+
+# Dependencies
 $(MODULE_LIST_H): $(MODULES_SRC:%.c=%.h)
 	@echo -n "Generating $(MODULE_LIST_H)..."
 	@echo '\n/* This file is auto-generated */\n\n#ifndef _MODULES_H\n#define _MODULES_H\n\n#include "myscreen-stats.h"\n' >$(MODULE_LIST_H)
