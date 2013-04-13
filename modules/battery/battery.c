@@ -1,4 +1,4 @@
-/*Copyright 2009-2013 Clément Mondon <clement.mondon@gmail.com>
+/* Copyright 2009-2013 Clément Mondon <clement.mondon@gmail.com>
 
 	This file is part of project myscreen.
 
@@ -118,12 +118,14 @@ static void calculate_battery(char * battery_result, const char * battery){
 
 	/*Calculate Rate*/
 	if (charge_full == 0 || charge_now == 0){
+		assert(BATTERY_RESULT_SIZE>2)
 		IFDEBUG_PRINT("Can't read values of battery");
+		battery_result[1]=' ';
 		battery_result[2]='\0';
 		return ;
 	}
 
-	assert(BATTERY_RESULT_SIZE>=2);
+	assert(BATTERY_RESULT_SIZE>1);
 	battery_result[1]='|';
 	percentage= (unsigned int) (( ((float)charge_now)  / charge_full) * 100);
 	assert(BATTERY_RESULT_SIZE>=3+5);
