@@ -42,6 +42,8 @@ static short no_activity_count;
 extern char line[];
 static char network_result[NETWORK_RESULT_SIZE]; /*Returned result */
 
+static short first_init = TRUE;
+
 /*Upload up and down values*/
 static int update_up_down(unsigned long * up, unsigned long * down){
 
@@ -212,7 +214,10 @@ char * init_network(char * confline){
 	strcat(network_result, " ");
 
 
-	(void)update_up_down(&up, &down);
+	if (first_init){
+		(void)update_up_down(&up, &down);
+		first_init = FALSE;
+	}
 	return network_result;
 }
 
