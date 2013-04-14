@@ -27,15 +27,21 @@ extern char line[]; /* Read line*/
 static char battery_result[BATTERY_RESULT_SIZE]; /* Returned result */
 static int time_cpt; /* To time elapsed */
 
+char * power_supply_charge_full[POWER_SUPPLY_NB] = POWER_SUPPLY_CHARGE_FULL;
+int power_supply_charge_full_len[POWER_SUPPLY_NB] = POWER_SUPPLY_CHARGE_FULL_LEN;
+char * power_supply_charge_now[POWER_SUPPLY_NB] = POWER_SUPPLY_CHARGE_NOW;
+int power_supply_charge_now_len[POWER_SUPPLY_NB] = POWER_SUPPLY_CHARGE_NOW_LEN;
+
 /*
  * Read file of path "battery" and build result string
  */
-static void calculate_battery(char * battery_result, const char * battery){
+static int calculate_battery(char * battery_result, const char * battery){
 
 	long int charge_full;
 	long int charge_now;
 	char * status; /* (POWER_DISCHARGING | POWER_CHARGING | POWER_FULL) */
 	FILE * f; /*Current file*/
+	short cpt;
 	/*char * ptr;*/
 	unsigned int percentage;
 
@@ -49,7 +55,7 @@ static void calculate_battery(char * battery_result, const char * battery){
 	f = fopen(battery, "r");
 	if (f == NULL){
 		IFDEBUG_PRINT("I can't read battery file");
-		return ;
+		return 0;
 	}
 
 	/*It is supposed that lines are correctly ordoned */
@@ -86,7 +92,8 @@ static void calculate_battery(char * battery_result, const char * battery){
 				if (fclose(f) == EOF){
 						perror("Closing Battery file ");
 				}
-				return ;
+				assert(strlen(battery_result) == 2);
+				return 2;
 				
 			} else {
 				IFDEBUG_PRINT("Can't read battery status");
@@ -95,19 +102,27 @@ static void calculate_battery(char * battery_result, const char * battery){
 		}
 
 		/*Determine charge_full*/
-		if (charge_full == 0 && strncmp(line, POWER_SUPPLY_CHARGE_FULL, POWER_SUPPLY_CHARGE_FULL_LEN) == 0){
-			/*ptr = line;*/
-			/*while ( ( *(ptr++) ) != '=' );*/
-			/*ptr += POWER_SUPPLY_CHARGE_FULL_LEN;*/
-			charge_full = strtol((line + POWER_SUPPLY_CHARGE_FULL_LEN), NULL, 10);
+		if (charge_full == 0){
+			cpt = 0;
+			while ( cpt < POWER_SUPPLY_NB ) {
+				if (strncmp(line, power_supply_charge_full[cpt], power_supply_charge_full_len[cpt]) == 0){
+					charge_full = strtol((line + power_supply_charge_full_len[cpt]), NULL, 10);
+					break ;
+				}
+				cpt++;
+			}
 		}
 
 		/*Determine charge_now*/
-		if (charge_now == 0 && strncmp(line, POWER_SUPPLY_CHARGE_NOW, POWER_SUPPLY_CHARGE_NOW_LEN) == 0 ){
-			/*ptr = line;*/
-			/*while ( ( *(ptr++) ) != '=' );*/
-			/*ptr += POWER_SUPPLY_CHARGE_NOW_LEN;*/
-			charge_now = strtol((line + POWER_SUPPLY_CHARGE_NOW_LEN), NULL, 10);
+		if (charge_now == 0) {
+			cpt = 0;
+			while ( cpt < POWER_SUPPLY_NB ) {
+				if (strncmp(line, power_supply_charge_now[cpt], power_supply_charge_now_len[cpt]) == 0){
+					charge_now = strtol((line + power_supply_charge_now_len[cpt]), NULL, 10);
+					break ;
+				}
+				cpt++;
+			}
 		}
 	}
 
@@ -122,14 +137,14 @@ static void calculate_battery(char * battery_result, const char * battery){
 		IFDEBUG_PRINT("Can't read values of battery");
 		battery_result[1]=' ';
 		battery_result[2]='\0';
-		return ;
+		return 2;
 	}
 
 	assert(BATTERY_RESULT_SIZE>1);
 	battery_result[1]='|';
 	percentage= (unsigned int) (( ((float)charge_now)  / charge_full) * 100);
 	assert(BATTERY_RESULT_SIZE>=3+5);
-	(void) myprint_percentage_s(&battery_result[2], percentage);
+	return myprint_percentage_s(&battery_result[2], percentage);
 }
 
 /*
@@ -137,9 +152,17 @@ static void calculate_battery(char * battery_result, const char * battery){
  */
 char * battery(){
 
+	char * ptr;
+
 	if (time_cpt == 0){
 		battery_result[0]='\0';
-		calculate_battery(battery_result, PROC_BATTERY0);
+		ptr = battery_result; 
+		ptr += calculate_battery(ptr, PROC_BATTERY0);
+		ptr += calculate_battery(ptr, PROC_BATTERY1);
+		ptr += calculate_battery(ptr, PROC_BATTERY2);
+
+		assert(ptr-battery_result<BATTERY_RESULT_SIZE);
+
 	} else if (time_cpt == TIME_BATTERY) {
 		time_cpt=-1;
 	} 
