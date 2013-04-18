@@ -65,8 +65,8 @@ oneshot: debug
 
 # Compile target
 compile: $(TARGET)
-	
-$(TARGET): $(MODULE_LIST_H) $(MODULE_LIST_OBJ) $(MODULES_OBJ) $(MAIN_OBJ) 
+
+$(TARGET): $(MYSCREEN_CONF) $(MODULE_LIST_H) $(MODULE_LIST_OBJ) $(MODULES_OBJ) $(MAIN_OBJ) 
 	$(CC) $(MARCH) $(MODULES_OBJ) $(MODULE_LIST_OBJ) $(MAIN_OBJ) -o $(TARGET) $(LDFLAGS)
 
 # Help
@@ -81,14 +81,15 @@ install: $(TARGET) ##Install myscreen
 		install $(TARGET) $(BIN_STATS)
 		install -d $(BIN_MYSCREEN)
 		install $(EXEC) $(BIN_MYSCREEN)
-	
+
 clean: ## Remove *.o
 	@-$(RM) -f $(LOG_STATIC)
 	@-$(RM) -f `find . -name *.o` $(MODULE_LIST_H) $(MODULE_LIST_C)
+	@-$(RM) -f $(MYSCREEN_CONF)
 
 realclean : clean ## Clean target, doc also
 	@-$(RM) $(TARGET) 
-	@-$(RM) -r $(DOC) 
+	@-$(RM) -r $(DOC)
 
 archive : realclean ## Create archive tar.gz in ../
 	#@REP=$$(basename $$PWD) ; cd ../ ; tar cvfz $(TARGET)-`date +%Y-%m-%d-%H-%M`.tar.gz  $${REP}/*
@@ -169,5 +170,22 @@ $(PKG_BIN) :
 	@echo "I can't find $@, trying to install it."
 	apt-get -y install $(strip $(subst ., , $(suffix $(filter $@%, $(PACKAGES) ) ) ) )
 
+
+# generating configuration file
+$(MYSCREEN_CONF):
+	@echo -n "Generating $(MYSCREEN_CONF)..."
+# write header
+	@echo "# Version 0.9" > $(MYSCREEN_CONF)
+	@echo "# Auto-generated configuration file of myscreen" >> $(MYSCREEN_CONF)
+	@echo "#" >> $(MYSCREEN_CONF)
+	@echo "# SYNTAX:" >> $(MYSCREEN_CONF)
+	@echo "#" >> $(MYSCREEN_CONF)
+	@echo "# to activate a module      ->   module_name   OR   module_name = OPTION" >> $(MYSCREEN_CONF)
+	@echo "# to desactivate a module   ->   comment it !" >> $(MYSCREEN_CONF)
+	@echo "#" >> $(MYSCREEN_CONF)
+	@echo "# If a module isn't mentioned, it's considerated as disable\n" >> $(MYSCREEN_CONF)
+# write body
+	@cat  `ls modules | sed -e 's/\([a-z][a-z_]*\)/modules\/\1\/\1\L.conf/g'` | sed '/^#/ d' >> $(MYSCREEN_CONF)
+	@echo " [OK]"
 
 .PHONY: dump clean realclean help new-module cppcheck
