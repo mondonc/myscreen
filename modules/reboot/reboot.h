@@ -22,7 +22,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <myscreen-stats.h>
-#define COLOR_REBOOT "\005{=bB dR}"
+#define COLOR_REBOOT RED BOLD
 #define REBOOT_REQUIRED "/var/run/reboot-required"
 
 

@@ -29,7 +29,7 @@
 
 
 #define NB_DISK_MAX 10
-#define COLOR_DISKS_ACCESS "\005{=b dB}"
+#define COLOR_DISKS_ACCESS BLUE BOLD
 #define DISK_ACCESS_SIZE 3 /*Size of device 3 to sd[a-z]*/
 #define DISK_ACCESS_RESULT_SIZE ( ( (5 * NB_DISK_MAX) +1) * 2 )  
 

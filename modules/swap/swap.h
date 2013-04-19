@@ -20,7 +20,7 @@
 #ifndef _SWAP_H
 #define _SWAP_H
 
-#define COLOR_SWAP "\005{= dg}"
+#define COLOR_SWAP GREEN
 #define SWAP_RESULT_SIZE 8
 #include <stdio.h>
 #include <sys/sysinfo.h>

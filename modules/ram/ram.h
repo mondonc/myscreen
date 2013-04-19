@@ -22,7 +22,7 @@
 #include <stdio.h>
 #include <sys/sysinfo.h>
 #include <myscreen-stats.h>
-#define COLOR_RAM "\005{=b dg}"
+#define COLOR_RAM GREEN BOLD
 #define RAM_RESULT_SIZE 6
 
 

@@ -48,8 +48,8 @@
 #define TIME_BATTERY 15 /* Multiplied by global loop TIME*/
 #define BATTERY_RESULT_SIZE 8 /* "S[999% 0"*/
 #define STATUS_LEN 30
-#define COLOR_BATTERY "\005{=b dg}"
-#define COLOR_WARNING_BATTERY "\007{=b r}"
+#define COLOR_BATTERY GREEN BOLD
+#define COLOR_WARNING_BATTERY RED BOLD
 
 
 char * battery();

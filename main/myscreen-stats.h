@@ -83,6 +83,7 @@
 /* MODULES */
 /***********/
 #include "modules_list.h"
+#include "colors.h"
 
 #define RESULT_SIZE_MAX 800 /* Max size of result string (per module) */
 #define LINE_SIZE 200 /* Read Line size of proc files and configuration file */

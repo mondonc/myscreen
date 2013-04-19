@@ -27,7 +27,7 @@
 
 #define PROC_STAT "/proc/stat"
 /*#define PROC_CPUINFO "/proc/cpuinfo"*/ /*old */
-#define COLOR_CPU "\005{=b dr}"
+#define COLOR_CPU RED BOLD
 #define NB_CPU_MAX 8
 #define CPU_RESULT_SIZE (4 + (NB_CPU_MAX * 4 ) + 4)
 char * cpu();

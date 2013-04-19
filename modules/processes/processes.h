@@ -19,7 +19,7 @@
 
 #ifndef _PROCESSES_H
 #define _PROCESSES_H
-#define COLOR_PROCESSES "\005{= dy}"
+#define COLOR_PROCESSES YELLOW
 #define PROCESSES_RESULT_SIZE 9 /*nb processes limited at 999 999 */
 #include <stdio.h>
 #include <sys/sysinfo.h>

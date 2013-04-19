@@ -30,7 +30,7 @@
 #define POWER_SUPPLY_SIZE 20 /*Size of fields */
 
 #define DISKS_USAGE_RESULT_SIZE 8 /* "S[999% 0"*/
-#define COLOR_DISKS_USAGE "\005{= db}"
+#define COLOR_DISKS_USAGE BLUE
 #define COLOR_ALERT_DISKS_USAGE "\005{= rk}"
 #define NB_DISK_MAX 10
 #define DISK_USAGE_SIZE ( 30 ) 
