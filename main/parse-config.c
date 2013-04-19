@@ -162,7 +162,7 @@ int read_configuration_file(){
 		} 
 	} /*END OF WHILE*/
 
-	assert(nb_module<NB_MODULES);
+	assert(nb_module<NB_MODULES+1);
 
 	/* End of current_conf tab */
 	current_conf[nb_module] = NULL;
