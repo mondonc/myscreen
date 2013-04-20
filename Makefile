@@ -89,7 +89,6 @@ clean: ## Remove *.o
 
 realclean : clean ## Clean target, doc also
 	@-$(RM) $(TARGET) 
-	@-$(RM) -r $(DOC)
 
 archive : realclean ## Create archive tar.gz in ../
 	#@REP=$$(basename $$PWD) ; cd ../ ; tar cvfz $(TARGET)-`date +%Y-%m-%d-%H-%M`.tar.gz  $${REP}/*
