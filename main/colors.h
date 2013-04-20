@@ -1,4 +1,4 @@
-/*Copyright 2009,2010,2011,2012,2013 Clément Mondon <clement.mondon@gmail.com>
+/*Copyright 2013 Barthelemy Delemotte <d.bartouz@gmail.com>
 
 	This file is part of project myscreen.
 
