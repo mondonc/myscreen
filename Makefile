@@ -130,6 +130,23 @@ $(MODULE_LIST_C): $(MODULES_SRC:%.c=%.h)
 	@echo 'char * (*init_mod[NB_MODULES])(char * conf_line) = {' `ls -m modules | sed -e 's/\([a-z][a-z_]*\)/init_\1/g'`  '};' >> $(MODULE_LIST_C)
 	@echo 'void (*exit_mod[NB_MODULES])(const char * conf_line) = {' `ls -m modules | sed -e 's/\([a-z][a-z_]*\)/exit_\1/g'`  '};' >> $(MODULE_LIST_C)
 	@echo " [OK]"
+	
+$(MYSCREEN_CONF):
+	@echo -n "Generating $(MYSCREEN_CONF)..."
+# Header
+	@echo "# Version 0.9" > $(MYSCREEN_CONF)
+	@echo "# Auto-generated configuration file of myscreen" >> $(MYSCREEN_CONF)
+	@echo "#" >> $(MYSCREEN_CONF)
+	@echo "# SYNTAX:" >> $(MYSCREEN_CONF)
+	@echo "#" >> $(MYSCREEN_CONF)
+	@echo "# to activate a module      ->   module_name   OR   module_name = OPTION" >> $(MYSCREEN_CONF)
+	@echo "# to desactivate a module   ->   comment it !" >> $(MYSCREEN_CONF)
+	@echo "#" >> $(MYSCREEN_CONF)
+	@echo "# If a module isn't mentioned, it's considerated as disable\n\n" >> $(MYSCREEN_CONF)
+# Body
+	@cat  `find modules/ -name '*.conf'`  >> $(MYSCREEN_CONF)
+	@echo " [OK]"
+
 
 %.o : %.c %.h
 	$(CC) $(MARCH) -o $@ -c $< $(CFLAGS) 
@@ -169,22 +186,5 @@ $(PKG_BIN) :
 	@echo "I can't find $@, trying to install it."
 	apt-get -y install $(strip $(subst ., , $(suffix $(filter $@%, $(PACKAGES) ) ) ) )
 
-
-# generating configuration file
-$(MYSCREEN_CONF):
-	@echo -n "Generating $(MYSCREEN_CONF)..."
-# write header
-	@echo "# Version 0.9" > $(MYSCREEN_CONF)
-	@echo "# Auto-generated configuration file of myscreen" >> $(MYSCREEN_CONF)
-	@echo "#" >> $(MYSCREEN_CONF)
-	@echo "# SYNTAX:" >> $(MYSCREEN_CONF)
-	@echo "#" >> $(MYSCREEN_CONF)
-	@echo "# to activate a module      ->   module_name   OR   module_name = OPTION" >> $(MYSCREEN_CONF)
-	@echo "# to desactivate a module   ->   comment it !" >> $(MYSCREEN_CONF)
-	@echo "#" >> $(MYSCREEN_CONF)
-	@echo "# If a module isn't mentioned, it's considerated as disable\n" >> $(MYSCREEN_CONF)
-# write body
-	@cat  `ls modules | sed -e 's/\([a-z][a-z_]*\)/modules\/\1\/\1\L.conf/g'` | sed '/^#/ d' >> $(MYSCREEN_CONF)
-	@echo " [OK]"
 
 .PHONY: dump clean realclean help new-module cppcheck
