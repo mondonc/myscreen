@@ -26,7 +26,7 @@ From Debian packages
 
 You can simply add one of the following lines in your sources.list :
 
-	deb http://myscreen.mondonc.org/debian/ stable/$(ARCH)
-	deb http://myscreen.mondonc.org/debian/ testing/$(ARCH)
+	deb http://myscreen.mondonc.org/debian/ stable/$(ARCH)/
+	deb http://myscreen.mondonc.org/debian/ testing/$(ARCH)/
 
 Packages are only compilated for i386 and amd64 architectures.
