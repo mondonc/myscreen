@@ -130,7 +130,7 @@ $(MODULE_LIST_C): $(MODULES_SRC:%.c=%.h)
 	@echo 'char * (*init_mod[NB_MODULES])(char * conf_line) = {' `ls -m modules | sed -e 's/\([a-z][a-z_]*\)/init_\1/g'`  '};' >> $(MODULE_LIST_C)
 	@echo 'void (*exit_mod[NB_MODULES])(const char * conf_line) = {' `ls -m modules | sed -e 's/\([a-z][a-z_]*\)/exit_\1/g'`  '};' >> $(MODULE_LIST_C)
 	@echo " [OK]"
-	
+
 $(MYSCREEN_CONF):
 	@echo -n "Generating $(MYSCREEN_CONF)..."
 # Header
@@ -144,12 +144,12 @@ $(MYSCREEN_CONF):
 	@echo "#" >> $(MYSCREEN_CONF)
 	@echo "# If a module isn't mentioned, it's considerated as disable\n\n" >> $(MYSCREEN_CONF)
 # Body
-	@cat  `find modules/ -name '*.conf'`  >> $(MYSCREEN_CONF)
+	@./autoconf.sh >> $(MYSCREEN_CONF)
 	@echo " [OK]"
 
 
 %.o : %.c %.h
-	$(CC) $(MARCH) -o $@ -c $< $(CFLAGS) 
+	$(CC) $(MARCH) -o $@ -c $< $(CFLAGS)
 
 manpage: myscreen.1
 myscreen.1 : doc/manpage.md

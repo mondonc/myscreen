@@ -6,6 +6,8 @@
 #define CHAR_CONF_COMMENT '#'
 
 #define HOME "HOME"
+
+#define CONF_LOCAL_FILE "./myscreenrc"
 #define CONF_HOME_FILE "/.myscreenrc"
 #define CONF_ETC_FILE "/etc/myscreenrc"
 

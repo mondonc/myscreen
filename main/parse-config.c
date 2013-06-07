@@ -107,29 +107,43 @@ int try_read_etc_configuration(){
 }
 
 /* 
- * Find configuration file 
+ * Try to read local(./) configuration
+ */
+int try_read_local_configuration(){
+	if ( (f = fopen(CONF_LOCAL_FILE, "r")) == NULL){
+		DEBUG_INFO("I can not read local configuration file")
+		return FALSE;
+	}
+	DEBUG_INFO("I read local configuration file")
+	return TRUE;
+}
+
+/*
+ * Find configuration file
  */
 static FILE * find_conf(){
 
-	f = NULL;
+  f = NULL;
+  if (try_read_local_configuration(&f) == FALSE){
 
-	/* If we can't read HOME configuration file */
-	if (try_read_home_configuration(&f) == FALSE){
+    /* If we can't read HOME configuration file */
+    if (try_read_home_configuration(&f) == FALSE){
 
-			/* Then trying to read ETC configuration file */
-			if ( try_read_etc_configuration(&f) == FALSE){
-		
-				/* If we can't read any configuration file, It is a problem */
-				DEBUG_WARNING("Can't read any configuration file ( in /etc or in your HOME directory)")
-				/* TODO : printf("/!\\  Can't read any configuration file (%s or in your HOME directory)\n",CONF_ETC_FILE); */
-				(void) (void)fflush(stdout);
-			}
-	}
-	return f;
+      /* Then trying to read ETC configuration file */
+      if ( try_read_etc_configuration(&f) == FALSE){
+
+	/* If we can't read any configuration file, It is a problem */
+	DEBUG_WARNING("Can't read any configuration file ( in /etc or in your HOME directory)")
+	  /* TODO : printf("/!\\  Can't read any configuration file (%s or in your HOME directory)\n",CONF_ETC_FILE); */
+	  (void) (void)fflush(stdout);
+      }
+    }
+  }
+  return f;
 }
 
-/* 
- * Read configuration file initializing current_conf[] 
+/*
+ * Read configuration file initializing current_conf[]
  */
 int read_configuration_file(){
 	int nb_module;
