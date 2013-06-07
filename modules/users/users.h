@@ -23,7 +23,7 @@
 #include <malloc.h>
 #include <utmp.h>
 #include <myscreen-stats.h>
-#define COLOR_USERS "\005{=b dd}"
+#define COLOR_USERS DEFAULT_COLOR BOLD
 #define USER_RESULT_SIZE 7 /*limite: 9 9999 */
 char * users();
 void exit_users();

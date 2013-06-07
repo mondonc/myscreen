@@ -117,7 +117,7 @@ $(MODULE_LIST_H): $(MODULES_SRC:%.c=%.h)
 	@echo -n "Generating $(MODULE_LIST_H)..."
 	@echo '\n/* This file is auto-generated */\n\n#ifndef _MODULES_H\n#define _MODULES_H\n\n#include "myscreen-stats.h"\n' >$(MODULE_LIST_H)
 	@for m in `ls modules` ; do echo "#include \"$${m}/$${m}.h\" " >> $(MODULE_LIST_H)   ; done 
-	@NB_MOD=`ls modules/ | wc -w` ; echo '\n#define NB_MODULES ' `expr 1 + $${NB_MOD}` '\n' >> $(MODULE_LIST_H)
+	@NB_MOD=`ls modules/ | wc -w` ; echo '\n#define NB_MODULES ' `expr $${NB_MOD}` '\n' >> $(MODULE_LIST_H)
 	@echo '\n#endif\n' >> $(MODULE_LIST_H)
 	@echo " [OK]"
 

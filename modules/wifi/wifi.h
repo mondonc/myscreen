@@ -25,7 +25,7 @@
 
 #define POWER_SIZE 5
 #define PROC_WIRELESS "/proc/net/wireless"
-#define COLOR_WIFI "\005{= dC}"
+#define COLOR_WIFI CYAN
 #define NB_WIFI_INTERFACE 3
 #define WIFI_RESULT_SIZE 5*NB_WIFI_INTERFACE+1
 

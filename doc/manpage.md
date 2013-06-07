@@ -69,7 +69,7 @@ SEE ALSO
 AUTHORS
 ===
 
-MyScreen was first developed by Clément Mondon <clement.mondon@gmail.com>.
+MyScreen was started by Clément Mondon <clement.mondon@gmail.com> and is now developped with Barthelemy Delemotte.
 
 This manual page was written by Clément Mondon <clement.mondon@gmail.com>, for the Debian project (and may be used by others).
 

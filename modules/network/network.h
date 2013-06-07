@@ -27,7 +27,7 @@
 #define INTERFACE_SIZE 5
 #define REFRESH_TIME 20 /*Refresh interface when no_activity > REFRESH_TIME (realtime is REFRESH_TIME * TIME) */
 #define PROC_NET_DEV "/proc/net/dev"
-#define COLOR_NETWORK "\005{=b dm}"
+#define COLOR_NETWORK MAGENTA BOLD
 #define NETWORK_RESULT_SIZE 30 
 #define PROC_NET_ROUTE "/proc/net/route"
 

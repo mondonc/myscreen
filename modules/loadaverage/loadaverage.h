@@ -22,7 +22,7 @@
 #include <stdio.h>
 #include <sys/sysinfo.h>
 #include <myscreen-stats.h>
-#define COLOR_LOADAVERAGE "\005{=b dy}"
+#define COLOR_LOADAVERAGE YELLOW BOLD
 #define LOADAVERAGE_RESULT_SIZE 10 /*Loadaverage limited at 99999.99xx */ 
 
 char * loadaverage();

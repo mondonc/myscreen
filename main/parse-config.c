@@ -84,7 +84,7 @@ int try_read_home_configuration(){
 	assert(conf_home != NULL);
 
 	if (( f = fopen(conf_home, "r")) == NULL){
-		DEBUG_INFO("I can not read HOME configuration file")
+	        DEBUG_INFO("I can not read HOME configuration file")
 		result = FALSE;
 	} else { 
 		DEBUG_INFO("I read HOME configuration file")
@@ -162,7 +162,7 @@ int read_configuration_file(){
 		} 
 	} /*END OF WHILE*/
 
-	assert(nb_module<NB_MODULES);
+	assert(nb_module<NB_MODULES+1);
 
 	/* End of current_conf tab */
 	current_conf[nb_module] = NULL;
@@ -216,15 +216,33 @@ void get_configuration(){
 	}
 }
 
+/*
+ * Get a pointer to the start of the module's name,
+ * and fill "len" with the module's name size  
+ */
+static char *identify_module_name(const char *s, size_t *len) {
+  while (*s && strchr(" \n\t", *s) != NULL)
+    s++;
+  *len = 0;
+  while (s[*len] && strchr(" \n\t=", s[*len]) == NULL)
+    (*len)++;
+  return ((char *)s);
+}
+
 /* 
  * Translate the module's name to this index 
  */
 int get_module_index(const char * s) {
 
 	int cpt;
+	size_t len;
+	char *sptr;
+
+	sptr = identify_module_name(s, &len);
+
 	for (cpt=0 ; cpt<NB_MODULES ; cpt++){
-		if (strstr(s,modules[cpt]) != NULL )
-			return cpt;
+	  if (strlen(modules[cpt]) == len && strncmp(sptr, modules[cpt], len) == 0)
+	    return cpt;
 	}
 	IFDEBUG(printf("PARSE-CONF: I can't understand %s \n", s););
 	return -1;

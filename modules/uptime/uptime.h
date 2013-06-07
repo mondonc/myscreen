@@ -19,7 +19,7 @@
 
 #ifndef _UPTIME_H
 #define _UPTIME_H
-#define COLOR_UPTIME "\005{= db}"
+#define COLOR_UPTIME BLUE
 #define UPTIME_RESULT_SIZE 10 /* 9999 */
 #include <stdio.h>
 #include <sys/sysinfo.h>
