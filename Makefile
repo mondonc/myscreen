@@ -29,13 +29,21 @@ ifdef DEB_HOST_ARCH_BITS
 endif
 
 # Modules support
-MODULES_SRC := $(foreach dir, $(wildcard modules/*) , $(wildcard $(dir)/*.c) )   
+MODULES_CONF := modules.conf
+include $(MODULES_CONF)
+MODULES_SRC := $(foreach dir, $(MODULES) , $(wildcard modules/$(dir)/*.c) )   
 MODULES_OBJ := $(MODULES_SRC:%.c=%.o)
 MAIN_SRC = main/myscreen-stats.c main/tools.c main/parse-config.c    
 MAIN_OBJ = $(MAIN_SRC:%.c=%.o)
 MODULE_LIST_H := main/modules_list.h 
 MODULE_LIST_C := $(MODULE_LIST_H:%.h=%.c) 
 MODULE_LIST_OBJ := $(MODULE_LIST_H:%.h=%.o) 
+MODULES_COMMA_R := $(filter-out $(firstword $(MODULES)), $(MODULES))
+MODULES_COMMA_QR := $(foreach mod,$(MODULES_COMMA_R),,"$(mod)")
+MODULES_COMMA_RR := $(foreach mod,$(MODULES_COMMA_R),,$(mod))
+MODULES_M := $(firstword $(MODULES)) $(MODULES_COMMA_RR)
+MODULES_QM := "$(firstword $(MODULES))" $(MODULES_COMMA_QR)
+
 
 
 # Configuration files
@@ -116,19 +124,19 @@ pre-build-local-install:
 $(MODULE_LIST_H): $(MODULES_SRC:%.c=%.h)
 	@echo -n "Generating $(MODULE_LIST_H)..."
 	@echo '\n/* This file is auto-generated */\n\n#ifndef _MODULES_H\n#define _MODULES_H\n\n#include "myscreen-stats.h"\n' >$(MODULE_LIST_H)
-	@for m in `ls modules` ; do echo "#include \"$${m}/$${m}.h\" " >> $(MODULE_LIST_H)   ; done 
-	@NB_MOD=`ls modules/ | wc -w` ; echo '\n#define NB_MODULES ' `expr $${NB_MOD}` '\n' >> $(MODULE_LIST_H)
+	@for m in $(MODULES) ; do echo "#include \"$${m}/$${m}.h\" " >> $(MODULE_LIST_H)   ; done 
+	@echo '\n#define NB_MODULES $(words $(MODULES))\n' >> $(MODULE_LIST_H)
 	@echo '\n#endif\n' >> $(MODULE_LIST_H)
 	@echo " [OK]"
 
 $(MODULE_LIST_C): $(MODULES_SRC:%.c=%.h)
 	@echo -n "Generating $(MODULE_LIST_C)..."
 	@echo '\n/* This file is auto-generated */\n#include "$(notdir $(MODULE_LIST_H))"\n' >$(MODULE_LIST_C)
-	@echo 'char * modules[] = {' `ls -mQ modules` '};' >> $(MODULE_LIST_C)
-	@echo 'char * modules_color[] = {' `ls -m modules | sed -e 's/\([a-z][a-z_]*\)/COLOR_\U\1/g'`  '};' >> $(MODULE_LIST_C)
-	@echo 'char * (*main_mod[NB_MODULES])() = {' `ls -m modules` '};' >> $(MODULE_LIST_C)
-	@echo 'char * (*init_mod[NB_MODULES])(char * conf_line) = {' `ls -m modules | sed -e 's/\([a-z][a-z_]*\)/init_\1/g'`  '};' >> $(MODULE_LIST_C)
-	@echo 'void (*exit_mod[NB_MODULES])(const char * conf_line) = {' `ls -m modules | sed -e 's/\([a-z][a-z_]*\)/exit_\1/g'`  '};' >> $(MODULE_LIST_C)
+	@echo 'char * modules[] = { $(MODULES_QM) };' >> $(MODULE_LIST_C)
+	@echo 'char * modules_color[] = {' `echo '$(MODULES_M)' | sed -e 's/\([a-z][a-z_]*\)/COLOR_\U\1/g'`  '};' >> $(MODULE_LIST_C)
+	@echo 'char * (*main_mod[NB_MODULES])() = { $(MODULES_M) };' >> $(MODULE_LIST_C)
+	@echo 'char * (*init_mod[NB_MODULES])(char * conf_line) = {' `echo '$(MODULES_M)' | sed -e 's/\([a-z][a-z_]*\)/init_\1/g'`  '};' >> $(MODULE_LIST_C)
+	@echo 'void (*exit_mod[NB_MODULES])(const char * conf_line) = {' `echo '$(MODULES_M)' | sed -e 's/\([a-z][a-z_]*\)/exit_\1/g'`  '};' >> $(MODULE_LIST_C)
 	@echo " [OK]"
 
 $(MYSCREEN_CONF):
