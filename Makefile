@@ -30,7 +30,10 @@ endif
 
 # Modules support
 MODULES_CONF := modules.conf
-include $(MODULES_CONF)
+-include $(MODULES_CONF)
+ifndef MODULES
+MODULES :=
+endif
 MODULES_SRC := $(foreach dir, $(MODULES) , $(wildcard modules/$(dir)/*.c) )   
 MODULES_OBJ := $(MODULES_SRC:%.c=%.o)
 MAIN_SRC = main/myscreen-stats.c main/tools.c main/parse-config.c    
@@ -43,6 +46,7 @@ MODULES_COMMA_QR := $(foreach mod,$(MODULES_COMMA_R),,"$(mod)")
 MODULES_COMMA_RR := $(foreach mod,$(MODULES_COMMA_R),,$(mod))
 MODULES_M := $(firstword $(MODULES)) $(MODULES_COMMA_RR)
 MODULES_QM := "$(firstword $(MODULES))" $(MODULES_COMMA_QR)
+
 
 
 
@@ -97,6 +101,7 @@ clean: ## Remove *.o
 
 realclean : clean ## Clean target, doc also
 	@-$(RM) $(TARGET) 
+	@-$(RM) $(MODULES_CONF) 
 
 archive : realclean ## Create archive tar.gz in ../
 	#@REP=$$(basename $$PWD) ; cd ../ ; tar cvfz $(TARGET)-`date +%Y-%m-%d-%H-%M`.tar.gz  $${REP}/*
@@ -115,13 +120,17 @@ build-local-install: pre-build-local-install realclean $(TARGET) install ## Comp
 	fi
 	export PATH=$${PATH}:$${HOME}/.myscreen/usr/bin
 
-
 pre-build-local-install: 
 	mkdir -p $(DESTDIR)
 
+$(MODULES_CONF):
+	@echo -n "Generating $(MODULES_CONF)...        "
+	@echo 'MODULES := ' `ls modules/` > $@
+	@echo " [OK]"
+
 
 # Dependencies
-$(MODULE_LIST_H): $(MODULES_SRC:%.c=%.h)
+$(MODULE_LIST_H): $(MODULES_CONF)
 	@echo -n "Generating $(MODULE_LIST_H)..."
 	@echo '\n/* This file is auto-generated */\n\n#ifndef _MODULES_H\n#define _MODULES_H\n\n#include "myscreen-stats.h"\n' >$(MODULE_LIST_H)
 	@for m in $(MODULES) ; do echo "#include \"$${m}/$${m}.h\" " >> $(MODULE_LIST_H)   ; done 
@@ -129,7 +138,7 @@ $(MODULE_LIST_H): $(MODULES_SRC:%.c=%.h)
 	@echo '\n#endif\n' >> $(MODULE_LIST_H)
 	@echo " [OK]"
 
-$(MODULE_LIST_C): $(MODULES_SRC:%.c=%.h)
+$(MODULE_LIST_C): $(MODULES_CONF)
 	@echo -n "Generating $(MODULE_LIST_C)..."
 	@echo '\n/* This file is auto-generated */\n#include "$(notdir $(MODULE_LIST_H))"\n' >$(MODULE_LIST_C)
 	@echo 'char * modules[] = { $(MODULES_QM) };' >> $(MODULE_LIST_C)
@@ -140,7 +149,7 @@ $(MODULE_LIST_C): $(MODULES_SRC:%.c=%.h)
 	@echo " [OK]"
 
 $(MYSCREEN_CONF):
-	@echo -n "Generating $(MYSCREEN_CONF)..."
+	@echo -n "Generating $(MYSCREEN_CONF)...          "
 # Header
 	@echo "# Version 0.9" > $(MYSCREEN_CONF)
 	@echo "# Auto-generated configuration file of myscreen" >> $(MYSCREEN_CONF)
