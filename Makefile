@@ -152,7 +152,7 @@ $(MYSCREEN_CONF):
 	@echo "#" >> $(MYSCREEN_CONF)
 	@echo "# If a module isn't mentioned, it's considerated as disable\n\n" >> $(MYSCREEN_CONF)
 # Body
-	@./autoconf.sh >> $(MYSCREEN_CONF)
+	@cat $(foreach mod,$(MODULES),modules/$(mod)/$(mod).conf) >> $(MYSCREEN_CONF)
 	@echo " [OK]"
 
 
