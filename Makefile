@@ -99,6 +99,7 @@ clean: ## Remove *.o
 	@-$(RM) -f `find . -name *.o` $(MODULE_LIST_H) $(MODULE_LIST_C)
 	@-$(RM) -f $(MYSCREEN_CONF)
 
+distclean : realclean
 realclean : clean ## Clean target, doc also
 	@-$(RM) $(TARGET) 
 	@-$(RM) $(MODULES_CONF) 
