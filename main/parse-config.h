@@ -11,7 +11,7 @@
 #define CONF_HOME_FILE "/.myscreenrc"
 #define CONF_ETC_FILE "/etc/myscreenrc"
 
-void get_configuration(); /* Read configuration file, complete current_conf[] */
+int get_configuration(); /* Read configuration file, complete current_conf[] */
 
 char * line_reader(char *line, int *module);
 
