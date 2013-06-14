@@ -117,7 +117,7 @@ $(MODULE_LIST_H): $(MODULES_SRC:%.c=%.h)
 	@echo -n "Generating $(MODULE_LIST_H)..."
 	@echo '\n/* This file is auto-generated */\n\n#ifndef _MODULES_H\n#define _MODULES_H\n\n#include "myscreen-stats.h"\n' >$(MODULE_LIST_H)
 	@for m in `ls modules` ; do echo "#include \"$${m}/$${m}.h\" " >> $(MODULE_LIST_H)   ; done 
-	@NB_MOD=`ls modules/ | wc -w` ; echo '\n#define NB_MODULES ' `expr $${NB_MOD}` '\n' >> $(MODULE_LIST_H)
+	@NB_MOD=`ls modules/ | wc -w` ; echo '\n#define NB_MODULES_MAX ' `expr $${NB_MOD}` '\n' >> $(MODULE_LIST_H)
 	@echo '\n#endif\n' >> $(MODULE_LIST_H)
 	@echo " [OK]"
 
@@ -126,9 +126,9 @@ $(MODULE_LIST_C): $(MODULES_SRC:%.c=%.h)
 	@echo '\n/* This file is auto-generated */\n#include "$(notdir $(MODULE_LIST_H))"\n' >$(MODULE_LIST_C)
 	@echo 'char * modules[] = {' `ls -mQ modules` '};' >> $(MODULE_LIST_C)
 	@echo 'char * modules_color[] = {' `ls -m modules | sed -e 's/\([a-z][a-z_]*\)/COLOR_\U\1/g'`  '};' >> $(MODULE_LIST_C)
-	@echo 'char * (*main_mod[NB_MODULES])() = {' `ls -m modules` '};' >> $(MODULE_LIST_C)
-	@echo 'char * (*init_mod[NB_MODULES])(char * conf_line) = {' `ls -m modules | sed -e 's/\([a-z][a-z_]*\)/init_\1/g'`  '};' >> $(MODULE_LIST_C)
-	@echo 'void (*exit_mod[NB_MODULES])(const char * conf_line) = {' `ls -m modules | sed -e 's/\([a-z][a-z_]*\)/exit_\1/g'`  '};' >> $(MODULE_LIST_C)
+	@echo 'char * (*main_mod[NB_MODULES_MAX])() = {' `ls -m modules` '};' >> $(MODULE_LIST_C)
+	@echo 'char * (*init_mod[NB_MODULES_MAX])(char * conf_line) = {' `ls -m modules | sed -e 's/\([a-z][a-z_]*\)/init_\1/g'`  '};' >> $(MODULE_LIST_C)
+	@echo 'void (*exit_mod[NB_MODULES_MAX])(const char * conf_line) = {' `ls -m modules | sed -e 's/\([a-z][a-z_]*\)/exit_\1/g'`  '};' >> $(MODULE_LIST_C)
 	@echo " [OK]"
 
 %.o : %.c %.h
