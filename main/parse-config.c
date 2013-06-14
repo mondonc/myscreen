@@ -162,11 +162,7 @@ int read_configuration_file(){
 		} 
 	} /*END OF WHILE*/
 
-	assert(nb_module<NB_MODULES_MAX+1);
-
-	/* End of current_conf tab */
-	current_conf[nb_module] = NULL;
-	exit_current_conf[nb_module] = NULL;
+	assert(nb_module<=NB_MODULES_MAX);
 
 	return nb_module;
 }
@@ -175,38 +171,35 @@ int read_configuration_file(){
  * Get default configuation (all modules enabled)
  */
 int get_default_configuration(){
-	int nb_module;
-	nb_module = 0;
+	int nb_modules;
 
 	IFDEBUG(printf("Default configuration : enable all modules"););
 	/* Enable all modules */
-	while ( nb_module < NB_MODULES_MAX - 1 ) {
-		current_conf[nb_module] = main_mod[nb_module]; 
-		nb_module++;
+	for(nb_modules=0;nb_modules < NB_MODULES_MAX;nb_modules++ ) {
+		current_conf[nb_modules] = main_mod[nb_modules]; 
 	}
-	/* End of current_conf tab */
-	current_conf[nb_module] = NULL;
 
-	return nb_module;
+	return nb_modules;
 }
 
 /* 
  * Read configuration file initializing current_conf[] 
  */
-void get_configuration(){
+int get_configuration(){
 
+	int nb_modules = -1;
 	/* Find configuration file */
 	find_conf();
 
 	/* If no configuration found */
 	if ( f == NULL){
 
-		(void)get_default_configuration();
+		nb_modules = get_default_configuration();
 	
 	/* Read configuration */
 	} else {
 
-		(void)read_configuration_file();
+		nb_modules = read_configuration_file();
 
 		/* Close file */
 		if (fclose(f) == EOF){
@@ -214,6 +207,9 @@ void get_configuration(){
 		}
 		end_wait();
 	}
+
+	assert(nb_modules > -1 && nb_modules <= NB_MODULES_MAX);
+	return nb_modules;
 }
 
 /*

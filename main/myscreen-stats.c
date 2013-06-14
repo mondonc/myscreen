@@ -89,6 +89,7 @@ static void exit_modules(){
 
 	cpt = 0;
 	/* For each module */
+	/* BUG TODO */
 	while (exit_current_conf[cpt] != 0) {
 		assert(cpt<NB_MODULES_MAX);
 		exit_current_conf[cpt++]();
@@ -98,21 +99,22 @@ static void exit_modules(){
 /* 
  * Loop to print stats 
  */
-static void loop_stat(){
+static void loop_stat(int nb_modules){
 
 	int cpt;
 	int module_idx;
 
+	assert(nb_modules<=NB_MODULES_MAX);
+
 	/* While we have to generate stats */
 	while(stats_loop) {
 
-		cpt = 0;
 
 		/* Get sysinfo struct (used by several modules) */
 		get_sysinfo();
 
 		/* For each module */
-		while ( cpt<NB_MODULES_MAX && current_conf[cpt] != NULL ){
+		for(cpt=0;cpt<nb_modules;cpt++){
 
 			/* Find module's index */
 			module_idx = find_module_index(cpt);
@@ -120,7 +122,6 @@ static void loop_stat(){
 			/* Display stats */
 			(void) display_module_stats(module_idx, cpt);
 
-			cpt++;
 		}
 
 		/* Display END and wait between two stats's generation*/
@@ -137,6 +138,7 @@ static void loop_stat(){
 int main (/*int argc, char ** argv*/)
 {
 
+	int nb_modules;
 	main_loop = TRUE;
 
 	DEBUG_INFO("Running in debug mode")
@@ -156,12 +158,14 @@ int main (/*int argc, char ** argv*/)
 
 			/* current_conf initialisation and modules initiatlisation calls */
 			DEBUG_INFO("Reading configuration file")
-			get_configuration();
+			nb_modules = get_configuration();
+			
+			assert(nb_modules>=0 && nb_modules <= NB_MODULES_MAX);
 
 			/* MAIN LOOP (print all stats while stats_loop == TRUE ) */
 			IFDEBUG_PRINT(" \n");
 			DEBUG_INFO("Starting stats loop")
-			loop_stat();
+			loop_stat(nb_modules);
 
 			/* Modules's exit calls */
 			DEBUG_INFO("Exit of all modules")
