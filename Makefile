@@ -134,7 +134,7 @@ $(MODULE_LIST_H): $(MODULES_CONF)
 	@echo -n "Generating $(MODULE_LIST_H)..."
 	@echo '\n/* This file is auto-generated */\n\n#ifndef _MODULES_H\n#define _MODULES_H\n\n#include "myscreen-stats.h"\n' >$(MODULE_LIST_H)
 	@for m in $(MODULES) ; do echo "#include \"$${m}/$${m}.h\" " >> $(MODULE_LIST_H)   ; done 
-	@echo '\n#define NB_MODULES $(words $(MODULES))\n' >> $(MODULE_LIST_H)
+	@echo '\n#define NB_MODULES_MAX $(words $(MODULES))\n' >> $(MODULE_LIST_H)
 	@echo '\n#endif\n' >> $(MODULE_LIST_H)
 	@echo " [OK]"
 
@@ -143,9 +143,9 @@ $(MODULE_LIST_C): $(MODULES_CONF)
 	@echo '\n/* This file is auto-generated */\n#include "$(notdir $(MODULE_LIST_H))"\n' >$(MODULE_LIST_C)
 	@echo 'char * modules[] = { $(MODULES_QM) };' >> $(MODULE_LIST_C)
 	@echo 'char * modules_color[] = {' `echo '$(MODULES_M)' | sed -e 's/\([a-z][a-z_]*\)/COLOR_\U\1/g'`  '};' >> $(MODULE_LIST_C)
-	@echo 'char * (*main_mod[NB_MODULES])() = { $(MODULES_M) };' >> $(MODULE_LIST_C)
-	@echo 'char * (*init_mod[NB_MODULES])(char * conf_line) = {' `echo '$(MODULES_M)' | sed -e 's/\([a-z][a-z_]*\)/init_\1/g'`  '};' >> $(MODULE_LIST_C)
-	@echo 'void (*exit_mod[NB_MODULES])(const char * conf_line) = {' `echo '$(MODULES_M)' | sed -e 's/\([a-z][a-z_]*\)/exit_\1/g'`  '};' >> $(MODULE_LIST_C)
+	@echo 'char * (*main_mod[NB_MODULES_MAX])() = { $(MODULES_M) };' >> $(MODULE_LIST_C)
+	@echo 'char * (*init_mod[NB_MODULES_MAX])(char * conf_line) = {' `echo '$(MODULES_M)' | sed -e 's/\([a-z][a-z_]*\)/init_\1/g'`  '};' >> $(MODULE_LIST_C)
+	@echo 'void (*exit_mod[NB_MODULES_MAX])(const char * conf_line) = {' `echo '$(MODULES_M)' | sed -e 's/\([a-z][a-z_]*\)/exit_\1/g'`  '};' >> $(MODULE_LIST_C)
 	@echo " [OK]"
 
 $(MYSCREEN_CONF):
