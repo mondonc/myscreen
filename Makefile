@@ -102,7 +102,6 @@ clean: ## Remove *.o
 distclean : realclean
 realclean : clean ## Clean target
 	@-$(RM) $(TARGET) 
-	@-$(RM) $(MODULES_CONF) 
 
 archive : realclean ## Create archive tar.gz in ../
 	#@REP=$$(basename $$PWD) ; cd ../ ; tar cvfz $(TARGET)-`date +%Y-%m-%d-%H-%M`.tar.gz  $${REP}/*
