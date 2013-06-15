@@ -100,7 +100,7 @@ clean: ## Remove *.o
 	@-$(RM) -f $(MYSCREEN_CONF)
 
 distclean : realclean
-realclean : clean ## Clean target, doc also
+realclean : clean ## Clean target
 	@-$(RM) $(TARGET) 
 	@-$(RM) $(MODULES_CONF) 
 
