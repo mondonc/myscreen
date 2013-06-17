@@ -198,7 +198,7 @@ char * init_network(char * confline){
 	} else {
 		strncpy(interface, conf_line, INTERFACE_SIZE); 
 		/* Build result string */
-		strcpy(network_result,"configured device: ");
+		strcpy(network_result," configured to : ");
 	}
 	no_activity_count=0;
 	/* Build "no activity" string */
@@ -208,7 +208,7 @@ char * init_network(char * confline){
 	strcat(no_activity, " ");
 
 	assert(strlen("selected device: ")+INTERFACE_SIZE+2 <= NETWORK_RESULT_SIZE);
-	assert(strlen("configured device: ")+INTERFACE_SIZE+2 <= NETWORK_RESULT_SIZE);
+	assert(strlen(" configured to : ")+INTERFACE_SIZE+2 <= NETWORK_RESULT_SIZE);
 	assert(strlen("no network found ")+INTERFACE_SIZE+2 <= NETWORK_RESULT_SIZE);
 
 	/* Build result string */
