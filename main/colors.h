@@ -27,7 +27,7 @@
 #define MAGENTA		"\005{= m}"
 #define CYAN		"\005{= c}"
 #define WHITE		"\005{= w}"
-#define DEFAULT_COLOR	"\005{= d}"
+#define DEFAULT_COLOR	"\005{= dd}"
 #define UNCHANGED_COLOR	"\005{= .}"
 
 #define BOLD		"\005{+b}"

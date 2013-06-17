@@ -97,7 +97,7 @@ static int get_disks_usage(char disks_usage[NB_DISK_MAX][DISK_USAGE_RESULT_SIZE]
 
 
 				if (percentage > 95)
-					snprintf(disks_usage[cpt], DISK_USAGE_RESULT_SIZE/NB_DISK_MAX, "%s%s:%d%%(%.1f%s)%s",COLOR_ALERT_DISKS_USAGE,found,percentage, free_res,unit,COLOR_DISKS_USAGE);
+					snprintf(disks_usage[cpt], DISK_USAGE_RESULT_SIZE/NB_DISK_MAX, "%s%s:%d%%(%.1f%s)%s%s",COLOR_ALERT_DISKS_USAGE,found,percentage, free_res,unit,DEFAULT_COLOR,COLOR_DISKS_USAGE);
 				else
 					snprintf(disks_usage[cpt], DISK_USAGE_RESULT_SIZE/NB_DISK_MAX, "%s:%d%%(%.1f%s)",found,percentage, free_res,unit);
 

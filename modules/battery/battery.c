@@ -55,6 +55,7 @@ static int calculate_battery(char * battery_result, const char * battery){
 	f = fopen(battery, "r");
 	if (f == NULL){
 		IFDEBUG_PRINT("I can't read battery file");
+		battery_result[0]='\0';
 		return 0;
 	}
 
