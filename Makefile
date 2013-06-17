@@ -97,11 +97,11 @@ install: $(TARGET) ##Install myscreen
 clean: ## Remove *.o
 	@-$(RM) -f $(LOG_STATIC)
 	@-$(RM) -f `find . -name *.o` $(MODULE_LIST_H) $(MODULE_LIST_C)
-	@-$(RM) -f $(MYSCREEN_CONF)
 
 distclean : realclean
 realclean : clean ## Clean target
 	@-$(RM) $(TARGET) 
+	@-$(RM) -f $(MYSCREEN_CONF)
 
 archive : realclean ## Create archive tar.gz in ../
 	#@REP=$$(basename $$PWD) ; cd ../ ; tar cvfz $(TARGET)-`date +%Y-%m-%d-%H-%M`.tar.gz  $${REP}/*
