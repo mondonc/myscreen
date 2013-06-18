@@ -145,7 +145,7 @@ static int calculate_battery(char * battery_result, const char * battery){
 	battery_result[1]='|';
 	percentage= (unsigned int) (( ((float)charge_now)  / charge_full) * 100);
 	assert(BATTERY_RESULT_SIZE>=3+5);
-	return myprint_percentage_s(&battery_result[2], percentage);
+	return 2 + myprint_percentage_s(&(battery_result[2]), percentage);
 }
 
 /*
