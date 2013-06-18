@@ -30,7 +30,7 @@ bind O login off
 bind } history
 
 # Window tabs, second to last line
-caption always " %{ kw}%?%-w%?%{r}%n %t%{kw}%?%+w%? %= %D%d/%m/%Y %0c:%s %{=b .} %H "
+caption always "%{ kw} %?%-w%?%{r}%n %t%{kw}%?%+w%? %= %D %d/%m/%Y %0c:%s %{=b .} %H "
 
 # Status string, last line
 hardstatus string ' %100`'

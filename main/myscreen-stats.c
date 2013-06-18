@@ -106,22 +106,16 @@ static void loop_stat(int nb_modules){
 
 	assert(nb_modules<=NB_MODULES_MAX);
 
-	/* While we have to generate stats */
 	while(stats_loop) {
 
-
-		/* Get sysinfo struct (used by several modules) */
 		get_sysinfo();
 
-		/* For each module */
 		for(cpt=0;cpt<nb_modules;cpt++){
 
-			/* Find module's index */
+			/* TODO : Improvement should be to maintain a translation array build at the begin to avoid operation at each loop  */
 			module_idx = find_module_index(cpt);
 
-			/* Display stats */
 			(void) display_module_stats(module_idx, cpt);
-
 		}
 
 		/* Display END and wait between two stats's generation*/

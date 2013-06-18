@@ -34,7 +34,7 @@ static char conf_line[LINE_SIZE];
 
 /*Network interface name*/
 static char interface[INTERFACE_SIZE+1];/*Name of current interface*/
-static char no_activity[INTERFACE_SIZE+15+1+1]; /*Name of current interface with "No activity on " and a final space */
+static char no_activity[INTERFACE_SIZE+17+1+1]; /*Name of current interface with " No activity on " and a final space */
 
 /*Refresh interface when no_activity > REFRESH_TIME */
 static short no_activity_count;
@@ -42,7 +42,7 @@ static short no_activity_count;
 extern char line[];
 static char network_result[NETWORK_RESULT_SIZE]; /*Returned result */
 
-static short first_init = TRUE;
+/*static short first_init = TRUE;*/
 
 /*Upload up and down values*/
 static int update_up_down(unsigned long * up, unsigned long * down){
@@ -62,6 +62,7 @@ static int update_up_down(unsigned long * up, unsigned long * down){
 				} else {
 					flag=TRUE;
 				}
+				break;
 			}
 		}
 		if (fclose(f) == EOF){
@@ -145,7 +146,7 @@ char * network(){
 		/* Update interface */
 		IFDEBUG_PRINT("Can't read values of network file");
 		if (no_activity_count > REFRESH_TIME){
-			(void)init_network(conf_line);	
+			return init_network(conf_line);	
 		} else {
 			no_activity_count++;
 			return "no network found ";
@@ -164,6 +165,7 @@ char * init_network(char * confline){
 	down=0;
 	flag=FALSE;
 
+	IFDEBUG_PRINT("Init network interface");
 	/* Save conf_line */
 	strncpyclr(conf_line, confline, LINE_SIZE);
 
@@ -196,7 +198,7 @@ char * init_network(char * confline){
 	} else {
 		strncpy(interface, conf_line, INTERFACE_SIZE); 
 		/* Build result string */
-		strcpy(network_result,"configured device: ");
+		strcpy(network_result," configured to : ");
 	}
 	no_activity_count=0;
 	/* Build "no activity" string */
@@ -206,7 +208,7 @@ char * init_network(char * confline){
 	strcat(no_activity, " ");
 
 	assert(strlen("selected device: ")+INTERFACE_SIZE+2 <= NETWORK_RESULT_SIZE);
-	assert(strlen("configured device: ")+INTERFACE_SIZE+2 <= NETWORK_RESULT_SIZE);
+	assert(strlen(" configured to : ")+INTERFACE_SIZE+2 <= NETWORK_RESULT_SIZE);
 	assert(strlen("no network found ")+INTERFACE_SIZE+2 <= NETWORK_RESULT_SIZE);
 
 	/* Build result string */
@@ -214,10 +216,10 @@ char * init_network(char * confline){
 	strcat(network_result, " ");
 
 
-	if (first_init){
+	/*if (first_init){*/
 		(void)update_up_down(&up, &down);
-		first_init = FALSE;
-	}
+		/*first_init = FALSE;
+	}*/
 	return network_result;
 }
 
