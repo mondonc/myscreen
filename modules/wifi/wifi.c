@@ -54,13 +54,14 @@ char * wifi(){
 				wifi_result[0]='-';
 				wifi_result[1]='1';
 				wifi_result[2]='%';
-				wifi_result[3]='\0';
+				wifi_result[3]=' ';
+				wifi_result[4]='\0';
 			} else {
-				cpt++;
 				assert(ptr-wifi_result+5<WIFI_RESULT_SIZE);
 				ptr+=myprint_percentage_s(ptr, power);
 
 			}
+			cpt++;
 		}
 	}
 	if (fclose(f) == EOF){
