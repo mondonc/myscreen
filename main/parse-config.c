@@ -132,14 +132,27 @@ static FILE * find_conf(){
       /* Then trying to read ETC configuration file */
       if ( try_read_etc_configuration(&f) == FALSE){
 
-	/* If we can't read any configuration file, It is a problem */
-	DEBUG_WARNING("Can't read any configuration file ( in /etc or in your HOME directory)")
-	  /* TODO : printf("/!\\  Can't read any configuration file (%s or in your HOME directory)\n",CONF_ETC_FILE); */
-	  (void) (void)fflush(stdout);
+				/* If we can't read any configuration file, It is a problem */
+				DEBUG_WARNING("Can't read any configuration file ( in /etc or in your HOME directory)")
+				/* TODO : printf("/!\\  Can't read any configuration file (%s or in your HOME directory)\n",CONF_ETC_FILE); */
+				(void) (void)fflush(stdout);
       }
     }
   }
   return f;
+}
+
+void init_module(int module_idx, int nb_module, char * line_conf){
+
+	/* Save module's function ptr to call it, in this order, after */
+	current_conf[nb_module] = main_mod[module_idx];
+	exit_current_conf[nb_module] = exit_mod[module_idx];
+
+	/* Enabled module initialisation */
+	DEBUG_MODULE("ENABLED with conf : «%s»",module_idx, modules[module_idx], strtok(line_conf, "\n"))
+	IFDEBUG((void)puts((init_mod[module_idx])(line_conf)););
+	IFNDEBUG((void)fputs(modules_color[module_idx], stdout); (void)fputs(init_mod[module_idx](line_conf), stdout););
+
 }
 
 /*
@@ -158,17 +171,8 @@ int read_configuration_file(){
 		if (fgets(line, LINE_SIZE, f) != NULL && line[0] != CHAR_CONF_COMMENT && line[0] != '\n') {
 
 			if ( (line_conf = line_reader(line, &module_idx)) != NULL){
-
-				/* Save module's function ptr to call it, in this order, after */
-				current_conf[nb_module] = main_mod[module_idx];
-				exit_current_conf[nb_module++] = exit_mod[module_idx];
-
-				/* Enabled module initialisation */
-				DEBUG_MODULE("ENABLED with conf : «%s»",module_idx, modules[module_idx], strtok(line_conf, "\n"))
-				IFDEBUG((void)puts((init_mod[module_idx])(line_conf)););
-
-				IFNDEBUG((void)fputs(modules_color[module_idx], stdout); (void)fputs(init_mod[module_idx](line_conf), stdout););
-
+				init_module(module_idx, nb_module, line_conf);
+				nb_module++;
 			} else {
 				/* Module is disabled */
 				IFDEBUG(printf("Module n°%d: disable\n",module_idx););
@@ -190,7 +194,7 @@ int get_default_configuration(){
 	IFDEBUG(printf("Default configuration : enable all modules"););
 	/* Enable all modules */
 	for(nb_modules=0;nb_modules < NB_MODULES_MAX;nb_modules++ ) {
-		current_conf[nb_modules] = main_mod[nb_modules]; 
+		init_module(nb_modules,nb_modules,"\0");
 	}
 
 	return nb_modules;
