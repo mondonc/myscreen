@@ -74,9 +74,9 @@ static const char *copy_info(const char *line, char *buffer, size_t size) {
 
   size_t i;
 
-  /* if 'line' is pointing to the end (bad proc/diskstats format) */
+  /* if 'line' is pointing to the end */
   IFDEBUG(if (*line == '\0')
-	    fprintf(stderr, "Error : disks_access: missing informations in %s\n", PROC_DISKSTATS));
+	    fprintf(stderr, "Error : network: missing informations\n"));
   
 
   /* copy the word-info */
@@ -87,8 +87,7 @@ static const char *copy_info(const char *line, char *buffer, size_t size) {
   
   /* if buffer is too small to copy the entire word */
   if (i >= size - 1 && strchr(PROC_FILES_SEPARATORS_CHARS, line[size - i - 1]) == NULL) {
-    IFDEBUG(fprintf(stderr, "Error : disks_access: %s: too long word size for '%s[...]'\n",
-		    PROC_DISKSTATS, buffer));
+    IFDEBUG(fprintf(stderr, "Error : network: too long word size for '%s[...]'\n", buffer));
     /* move 'line' to the end of the word */
     while (strchr(PROC_FILES_SEPARATORS_CHARS, *line) == NULL)
       line++;
