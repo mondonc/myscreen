@@ -48,21 +48,21 @@ static const char *copy_info(const char *line, char *buffer, size_t size) {
 
   /* if 'line' is pointing to the end (bad proc/mounts format) */
   IFDEBUG(if (*line == '\0')
-	    fprintf(stderr, "Error : disk_usage: missing informations in %s\n", PROC_MOUNTS));
+	    fprintf(stderr, "Error : disks_usage: missing informations in %s\n", PROC_MOUNTS));
   
 
   /* copy the word-info */
-  for (i = 0; i < size - 1 && line[i] && strchr(PROC_FILES_SEPARATORS_CHARS, line[i]) == NULL; i++)
+  for (i = 0; i < size - 1 && strchr(PROC_FILES_SEPARATORS_CHARS, line[i]) == NULL; i++)
     buffer[i] = line[i];
   buffer[i] = '\0';
   line += i;
   
   /* if buffer is too small to copy the entire word */
-  if (i >= size - 1) {
-    IFDEBUG(fprintf(stderr, "Error : disk_usage: %s: too long word size for '%s[...]'\n",
+  if (i >= size - 1 && strchr(PROC_FILES_SEPARATORS_CHARS, line[size - i - 1]) == NULL) {
+    IFDEBUG(fprintf(stderr, "Error : disks_usage: %s: too long word size for '%s[...]'\n",
 		    PROC_MOUNTS, buffer));
     /* move 'line' to the end of the word */
-    while (*line && strchr(PROC_FILES_SEPARATORS_CHARS, *line) == NULL)
+    while (strchr(PROC_FILES_SEPARATORS_CHARS, *line) == NULL)
       line++;
   }
 
@@ -73,7 +73,7 @@ static const char *copy_info(const char *line, char *buffer, size_t size) {
 ** Get device, mount and type infos of a line from /proc/mounts, respecting the buffers sizes
 ** This function is a secured alternative to sscanf
 */
-static int sscan_mounts_line(const char *line,  char *dev, char *mnt, char *type) {
+static int sscan_mounts_line(const char *line, char *dev, char *mnt, char *type) {
 
   line = jump_separators(line);
   line = copy_info(line, dev, PROC_MOUNTS_DEV_SIZE);
@@ -174,7 +174,7 @@ static int get_disks_usage(char disks_usage[NB_DISK_MAX][DISK_USAGE_RESULT_SIZE]
 
 	}
 	else {
-	  IFDEBUG(error("Error : disk_usage: ", FALSE); perror(PROC_MOUNTS));
+	  IFDEBUG(error("Error : disks_usage: ", FALSE); perror(PROC_MOUNTS));
 	}
 	return cpt;
 }
