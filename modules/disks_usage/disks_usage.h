@@ -41,6 +41,10 @@
 #define VALUE_MO  1048576 /* 2^20 == 1024*1024*/
 
 
+#define PROC_MOUNTS_DEV_SIZE DISK_USAGE_RESULT_SIZE
+#define PROC_MOUNTS_MNT_SIZE (DISK_USAGE_RESULT_SIZE*2)
+#define PROC_MOUNTS_TYPE_SIZE (DISK_USAGE_SIZE*2)
+
 char * disks_usage();
 char * init_disks_usage(char * line);
 void exit_disks_usage();

@@ -26,12 +26,70 @@
 static char disk_result[DISK_USAGE_RESULT_SIZE];
 extern char line[];
 
+
+/*
+** move 'line' pointer to the next word of the line, returning it
+*/
+static const char *jump_separators(const char *line) {
+
+  while (*line && strchr(PROC_FILES_SEPARATORS_CHARS, *line))
+    line++;
+  return line;
+}
+
+/*
+** copy at most 'size' characters of the line in buffer.
+** including null byte at the end of 'buffer'
+** return the moved 'line' pointer, at the first separator character 
+*/
+static const char *copy_info(const char *line, char *buffer, size_t size) {
+
+  size_t i;
+
+  /* if 'line' is pointing to the end (bad proc/mounts format) */
+  IFDEBUG(if (*line == '\0')
+	    fprintf(stderr, "Error : disk_usage: missing informations in %s\n", PROC_MOUNTS));
+  
+
+  /* copy the word-info */
+  for (i = 0; i < size - 1 && line[i] && strchr(PROC_FILES_SEPARATORS_CHARS, line[i]) == NULL; i++)
+    buffer[i] = line[i];
+  buffer[i] = '\0';
+  line += i;
+  
+  /* if buffer is too small to copy the entire word */
+  if (i >= size - 1) {
+    IFDEBUG(fprintf(stderr, "Error : disk_usage: %s: too long word size for '%s[...]'\n",
+		    PROC_MOUNTS, buffer));
+    /* move 'line' to the end of the word */
+    while (*line && strchr(PROC_FILES_SEPARATORS_CHARS, *line) == NULL)
+      line++;
+  }
+
+  return line;
+}
+
+/*
+** Get device, mount and type infos of a line from /proc/mounts, respecting the buffers sizes
+** This function is a secured alternative to sscanf
+*/
+static int sscan_mounts_line(const char *line,  char *dev, char *mnt, char *type) {
+
+  line = jump_separators(line);
+  line = copy_info(line, dev, PROC_MOUNTS_DEV_SIZE);
+  line = jump_separators(line);
+  line = copy_info(line, mnt, PROC_MOUNTS_MNT_SIZE);
+  line = jump_separators(line);
+  line = copy_info(line, type, PROC_MOUNTS_TYPE_SIZE);
+  return 0;
+}
+
 /* Get usage values of disks*/
 static int get_disks_usage(char disks_usage[NB_DISK_MAX][DISK_USAGE_RESULT_SIZE]){
 
-	char dev[DISK_USAGE_RESULT_SIZE];
-	char mnt[DISK_USAGE_RESULT_SIZE*2];
-	char type[DISK_USAGE_SIZE*2];
+	char dev[PROC_MOUNTS_DEV_SIZE];
+	char mnt[PROC_MOUNTS_MNT_SIZE];
+	char type[PROC_MOUNTS_TYPE_SIZE];
 	char * found;
 	int cpt;
 	struct statvfs buf;
@@ -49,9 +107,11 @@ static int get_disks_usage(char disks_usage[NB_DISK_MAX][DISK_USAGE_RESULT_SIZE]
 
 		while ( fgets(line, LINE_SIZE, f) != NULL && cpt < NB_DISK_MAX){
 
+		  /*
 			if (sscanf(line, " %s %s %s %*s %*d %*d", dev, mnt, type) != 3)
 				error("Read of PROC_MOUNTS", FALSE);
-
+		  */
+		  sscan_mounts_line(line, dev, mnt, type);
 			if (strstr(FILESYSTEM_TYPES, type) != NULL ) {
 
 				int percentage;
@@ -60,8 +120,9 @@ static int get_disks_usage(char disks_usage[NB_DISK_MAX][DISK_USAGE_RESULT_SIZE]
 
 				/* Get fs infos */
 				if (statvfs(mnt, &buf) == -1) {
-					error("Read statvfs", FALSE);
-					perror("statvfs");
+					error("Read statvfs: ", FALSE);
+					perror(mnt);
+					continue ;
 				}
 
 				if ( (found = strstr(mnt, "/media/")) != NULL){
@@ -111,6 +172,9 @@ static int get_disks_usage(char disks_usage[NB_DISK_MAX][DISK_USAGE_RESULT_SIZE]
 			perror("Closing diskstat file ");
 		}
 
+	}
+	else {
+	  IFDEBUG(error("Error : disk_usage: ", FALSE); perror(PROC_MOUNTS));
 	}
 	return cpt;
 }

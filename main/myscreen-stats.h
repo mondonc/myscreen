@@ -96,6 +96,8 @@
 #define TRUE 1
 #define FALSE 0
 
+#define PROC_FILES_SEPARATORS_CHARS " \t"
+
 int main(/*int argc, char ** argv*/);
 void end_wait();
 
