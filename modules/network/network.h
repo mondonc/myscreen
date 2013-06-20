@@ -33,6 +33,9 @@
 
 #define OPT_AUTO "auto"
 
+#define PROC_NET_INTERFACE_SIZE (INTERFACE_SIZE+1)
+#define NET_NO_ACTIVITY_SIZE (INTERFACE_SIZE+17+1+1)
+
 char * network();
 char * init_network(char * line);
 void exit_network();

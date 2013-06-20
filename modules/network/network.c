@@ -44,6 +44,106 @@ static char network_result[NETWORK_RESULT_SIZE]; /*Returned result */
 
 /*static short first_init = TRUE;*/
 
+
+/*
+** move 'line' pointer to the next word of the line, returning it
+*/
+static const char *jump_separators(const char *line) {
+
+  while (*line && strchr(PROC_FILES_SEPARATORS_CHARS, *line))
+    line++;
+  return line;
+}
+
+/*
+** move 'line' pointer to the next sepatator_char of the line, returning it
+*/
+static const char *jump_info(const char *line) {
+
+  while (strchr(PROC_FILES_SEPARATORS_CHARS, *line) == NULL)
+    line++;
+  return line;
+}
+
+/*
+** copy at most 'size' characters of the line in buffer.
+** including null byte at the end of 'buffer'
+** return the moved 'line' pointer, at the first separator character 
+*/
+static const char *copy_info(const char *line, char *buffer, size_t size) {
+
+  size_t i;
+
+  /* if 'line' is pointing to the end (bad proc/diskstats format) */
+  IFDEBUG(if (*line == '\0')
+	    fprintf(stderr, "Error : disks_access: missing informations in %s\n", PROC_DISKSTATS));
+  
+
+  /* copy the word-info */
+  for (i = 0; i < size - 1 && strchr(PROC_FILES_SEPARATORS_CHARS, line[i]) == NULL; i++)
+    buffer[i] = line[i];
+  buffer[i] = '\0';
+  line += i;
+  
+  /* if buffer is too small to copy the entire word */
+  if (i >= size - 1 && strchr(PROC_FILES_SEPARATORS_CHARS, line[size - i - 1]) == NULL) {
+    IFDEBUG(fprintf(stderr, "Error : disks_access: %s: too long word size for '%s[...]'\n",
+		    PROC_DISKSTATS, buffer));
+    /* move 'line' to the end of the word */
+    while (strchr(PROC_FILES_SEPARATORS_CHARS, *line) == NULL)
+      line++;
+  }
+
+  return line;
+}
+
+
+static int sscan_net_dev(const char *line, unsigned long *down, unsigned long *up) {
+
+  int i;
+
+  /* jump interface name */
+  line = jump_separators(line);
+  while (*line && *line != ':')
+    line++;
+  if (*line == ':')
+    line++;
+
+  /* get down */
+  line = jump_separators(line);
+  *down = strtoul(line, NULL, 10);
+  line = jump_info(line);
+
+  /* jump 7 infos */
+  for (i = 0; i < 7; i++) {
+    line = jump_separators(line);
+    line = jump_info(line);
+  }
+
+  /* get up */
+  line = jump_separators(line);
+  *up = strtoul(line, NULL, 10);
+
+  return 0;
+}
+
+static int sscan_net_route(const char *line, char *interface, char *gw) {
+
+  /* get interface */
+  line = jump_separators(line);
+  line = copy_info(line, interface, PROC_NET_INTERFACE_SIZE);
+
+  /* jump 1 info */
+  line = jump_separators(line);
+  line = jump_info(line);
+
+  /* get gw */
+  line = jump_separators(line);
+  line = copy_info(line, gw, GW_SIZE);
+
+  return 0;
+}
+
 /*Upload up and down values*/
 static int update_up_down(unsigned long * up, unsigned long * down){
 
@@ -54,15 +154,16 @@ static int update_up_down(unsigned long * up, unsigned long * down){
 
 	/*Get recent values*/	
 	if ( (f=fopen(PROC_NET_DEV, "r")) ){
+
+	  /* jump two lines (header) */
+	  (void)(fgets(line, LINE_SIZE, f));
+	  (void)(fgets(line, LINE_SIZE, f));
+	  
 		while ((fgets(line, LINE_SIZE, f)) != NULL){
 			if (strstr(line, interface) != NULL){
-				if (sscanf(line, " %*[a-zA-Z0-9]:%lu %*s %*s %*s %*s %*s %*s %*s %lu ", down, up) != 2){
-					IFDEBUG_PRINT("Can't read network values");
-					return flag;	
-				} else {
-					flag=TRUE;
-				}
-				break;
+			  sscan_net_dev(line, down, up);
+			  flag=TRUE;
+			  break;
 			}
 		}
 		if (fclose(f) == EOF){
@@ -165,7 +266,7 @@ char * init_network(char * confline){
 	down=0;
 	flag=FALSE;
 
-	IFDEBUG_PRINT("Init network interface");
+	IFDEBUG_PRINT("Init network interface: ");
 	/* Save conf_line */
 	strncpyclr(conf_line, confline, LINE_SIZE);
 
@@ -177,11 +278,10 @@ char * init_network(char * confline){
 			/*First line ignored*/
 			(void)fgets(line, LINE_SIZE, f);
 			while ( flag == FALSE && (fgets(line, LINE_SIZE, f)) != NULL){
-				if (sscanf(line, "%s %*s %s", interface, gw) == 2){
-					if (strcmp(gw, "00000000") != 0){
-						flag=TRUE;
-					}
-				}
+			  sscan_net_route(line, interface, gw);
+			  if (strcmp(gw, "00000000") != 0){
+			    flag=TRUE;
+			  }	
 			}
 			if (fclose(f) == EOF){
 				perror("Closing proc network file ");

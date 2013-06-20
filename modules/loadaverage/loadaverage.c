@@ -44,7 +44,7 @@ char * init_loadaverage(char * conf_line){
 	int_conf_line = 0;
 	config=0;
 	
-	sscanf(conf_line, "%d", &int_conf_line);
+	int_conf_line = atoi(conf_line);
 
 	if (int_conf_line == 5){
 		int_conf_line = 1;

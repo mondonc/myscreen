@@ -46,8 +46,7 @@ static const char *jump_separators(const char *line) {
 /*
 ** move 'line' pointer to the next sepatator_char of the line, returning it
 */
-static const char *jump_info(const char *line)
-{
+static const char *jump_info(const char *line) {
 
   while (strchr(PROC_FILES_SEPARATORS_CHARS, *line) == NULL)
     line++;
@@ -87,7 +86,7 @@ static const char *copy_info(const char *line, char *buffer, size_t size) {
 }
 
 /*
-** Get device, mount and type infos of a line from /proc/diskstats, respecting the buffers sizes
+** Get infos of a line from /proc/diskstats, respecting the buffers sizes
 ** This function is a secured alternative to sscanf
 */
 static int sscan_diskstats_line(const char *line, int *type, char *part, long *_disk) {
