@@ -27,11 +27,12 @@
 
 #define PROC_DISKSTATS "/proc/diskstats"
 
-
 #define NB_DISK_MAX 10
 #define COLOR_DISKS_ACCESS BLUE BOLD
 #define DISK_ACCESS_SIZE 3 /*Size of device 3 to sd[a-z]*/
 #define DISK_ACCESS_RESULT_SIZE ( ( (5 * NB_DISK_MAX) +1) * 2 )  
+
+#define PROC_DISKSTATS_PART_SIZE (DISK_ACCESS_SIZE+3)
 
 char * disks_access();
 char * init_disks_access(char * line);

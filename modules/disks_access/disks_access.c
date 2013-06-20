@@ -32,6 +32,95 @@ static int nb_disks; /*number of disks*/
 static char disk_result[DISK_ACCESS_RESULT_SIZE];
 extern char line[];
 
+
+/*
+** move 'line' pointer to the next word of the line, returning it
+*/
+static const char *jump_separators(const char *line) {
+
+  while (*line && strchr(PROC_FILES_SEPARATORS_CHARS, *line))
+    line++;
+  return line;
+}
+
+/*
+** move 'line' pointer to the next sepatator_char of the line, returning it
+*/
+static const char *jump_info(const char *line)
+{
+
+  while (strchr(PROC_FILES_SEPARATORS_CHARS, *line) == NULL)
+    line++;
+  return line;
+}
+
+/*
+** copy at most 'size' characters of the line in buffer.
+** including null byte at the end of 'buffer'
+** return the moved 'line' pointer, at the first separator character 
+*/
+static const char *copy_info(const char *line, char *buffer, size_t size) {
+
+  size_t i;
+
+  /* if 'line' is pointing to the end (bad proc/diskstats format) */
+  IFDEBUG(if (*line == '\0')
+	    fprintf(stderr, "Error : disks_access: missing informations in %s\n", PROC_DISKSTATS));
+  
+
+  /* copy the word-info */
+  for (i = 0; i < size - 1 && strchr(PROC_FILES_SEPARATORS_CHARS, line[i]) == NULL; i++)
+    buffer[i] = line[i];
+  buffer[i] = '\0';
+  line += i;
+  
+  /* if buffer is too small to copy the entire word */
+  if (i >= size - 1 && strchr(PROC_FILES_SEPARATORS_CHARS, line[size - i - 1]) == NULL) {
+    IFDEBUG(fprintf(stderr, "Error : disks_access: %s: too long word size for '%s[...]'\n",
+		    PROC_DISKSTATS, buffer));
+    /* move 'line' to the end of the word */
+    while (strchr(PROC_FILES_SEPARATORS_CHARS, *line) == NULL)
+      line++;
+  }
+
+  return line;
+}
+
+/*
+** Get device, mount and type infos of a line from /proc/diskstats, respecting the buffers sizes
+** This function is a secured alternative to sscanf
+*/
+static int sscan_diskstats_line(const char *line, int *type, char *part, long *_disk) {
+
+  int i;
+
+  /* get type info */
+  line = jump_separators(line);
+  *type = atoi(line);
+  line = jump_info(line);
+
+  /* jump 1 info */
+  line = jump_separators(line);
+  line = jump_info(line);
+
+  /* get part info */
+  line = jump_separators(line);
+  line = copy_info(line, part, PROC_DISKSTATS_PART_SIZE);
+
+  /* jump 9 infos */
+  for (i = 0; i < 9; i++) {
+    line = jump_separators(line);
+    line = jump_info(line);
+  }
+
+  /* get disk info */
+  line = jump_separators(line);
+  *_disk = atol(line);
+
+  return 0;
+}
+
+
 /*Update values of disks*/
 static int update_disks(long * disk){
 
@@ -53,9 +142,11 @@ static int update_disks(long * disk){
 
 		while ( fgets(line, LINE_SIZE, f) != NULL && cpt < NB_DISK_MAX ){
 
+		  /*
 			if (sscanf(line, " %d %*d %s %*s %*s %*s %*s %*s %*s %*s %*s %*s %ld ", &type, part, &_disk) != 3)
-				error("Read of diskstats", FALSE);
-
+			error("Read of diskstats", FALSE);
+		  */
+		  sscan_diskstats_line(line, &type, part, &_disk);
 			if ( type == 8 && strlen(part) == DISK_ACCESS_SIZE ){
 
 				/*New disk ?*/
@@ -107,6 +198,10 @@ static int update_disks(long * disk){
 			perror("Closing diskstat file ");
 		}
 	}
+	else {
+	  IFDEBUG(error("Error : disks_access: ", FALSE); perror(PROC_DISKSTATS));
+	}
+
 	return cpt;
 }
 
