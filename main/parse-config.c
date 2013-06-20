@@ -124,13 +124,13 @@ int try_read_local_configuration(){
 static FILE * find_conf(){
 
   f = NULL;
-  if (try_read_local_configuration(&f) == FALSE){
+  if (try_read_local_configuration() == FALSE){
 
     /* If we can't read HOME configuration file */
-    if (try_read_home_configuration(&f) == FALSE){
+    if (try_read_home_configuration() == FALSE){
 
       /* Then trying to read ETC configuration file */
-      if ( try_read_etc_configuration(&f) == FALSE){
+      if ( try_read_etc_configuration() == FALSE){
 
 				/* If we can't read any configuration file, It is a problem */
 				DEBUG_WARNING("Can't read any configuration file ( in /etc or in your HOME directory)")
