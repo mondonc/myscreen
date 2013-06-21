@@ -260,6 +260,7 @@ char * init_network(char * confline){
 
 	FILE * f;
 	short flag;
+
 	/*INIT OLD RATES*/
 	up=0;
 	down=0;
@@ -288,9 +289,10 @@ char * init_network(char * confline){
 		}
 
 		/* Build result string */
-		if (*interface != '\0') {
+		if (flag == TRUE) {
 			strcpy(network_result,"selected device: ");
 		} else {
+		        *interface = '\0';
 			strcpy(network_result,"no network found ");
 		}
 
