@@ -191,7 +191,7 @@ char * network(){
 	d_unit=" o/s";
 	network_result[0]='\0';
 
-	if (update_up_down(&_up, &_down) == TRUE ){
+	if (*interface && update_up_down(&_up, &_down) == TRUE ){
 
 		/*Rates*/
 		float u_rate;
@@ -244,7 +244,7 @@ char * network(){
 	} else {
 		/*Unkown values, updating interface*/
 		/* Update interface */
-		IFDEBUG_PRINT("Can't read values of network file");
+	        IFDEBUG_PRINT(*interface ? "Can't read values of network file" : "no network found");
 		if (no_activity_count > REFRESH_TIME){
 			return init_network(conf_line);	
 		} else {
