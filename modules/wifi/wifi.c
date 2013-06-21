@@ -19,64 +19,101 @@
 
 #include "wifi.h"
 
-/**
- * Display wifi quality 
- */
+/*
+** Display wifi quality 
+*/
 
 extern char line[];
-static char wifi_result[WIFI_RESULT_SIZE]; /*Returned result */
+static char wifi_result[WIFI_RESULT_SIZE]; /* Returned result */
 
-/*WIFI*/
-char * wifi(){
+/*
+** move 'line' pointer to the next word of the line, returning it
+*/
+static const char *jump_separators(const char *line) {
 
-	/*Variables*/
-	FILE * f;
-	int power;
-	char * ptr;
-	int cpt;
+  while (*line && strchr(PROC_FILES_SEPARATORS_CHARS, *line))
+    line++;
+  return line;
+}
 
-	/*Init*/
-	wifi_result[0]='\0';
-	f=fopen(PROC_WIRELESS, "r");
-	if (f == NULL){
-		IFDEBUG_PRINT("Can't open wifi file");
-		return wifi_result;
-	}
+/*
+** move 'line' pointer to the next sepatator_char of the line, returning it
+*/
+static const char *jump_info(const char *line) {
 
-	ptr=wifi_result;
+  while (strchr(PROC_FILES_SEPARATORS_CHARS, *line) == NULL)
+    line++;
+  return line;
+}
 
-	cpt=0;
-	/*For each interface*/
-	while ((fgets(line, LINE_SIZE, f))!=NULL && cpt < NB_WIFI_INTERFACE){
-		if (strstr(line, ":")!=NULL){
-			if (sscanf(line, " %*[a-zA-Z0-9]: %*s %d %*s ", &power) != 1){
-				IFDEBUG_PRINT("Can't read interface values");
-				wifi_result[0]='-';
-				wifi_result[1]='1';
-				wifi_result[2]='%';
-				wifi_result[3]=' ';
-				wifi_result[4]='\0';
-			} else {
-				assert(ptr-wifi_result+5<WIFI_RESULT_SIZE);
-				ptr+=myprint_percentage_s(ptr, power);
+static int sscan_net_wireless(const char *line, int *power) {
 
-			}
-			cpt++;
-		}
-	}
-	if (fclose(f) == EOF){
-		perror("Closing proc Wifi file ");
-	}
-	return wifi_result;
+  /* jump interface name */
+  line = jump_separators(line);
+  while (*line && *line != ':')
+    line++;
+  if (*line == ':')
+    line++;
+
+  /* jump 1 info */
+  line = jump_separators(line);
+  line = jump_info(line);
+
+  /* get power */
+  *power = atoi(line);
+
+  return 0;
+}
+
+/* WIFI */
+char * wifi() {
+
+  /* Variables */
+  FILE * f;
+  int power;
+  char * ptr;
+  int cpt;
+  
+  /* Init */
+  wifi_result[0]='\0';
+  f = fopen(PROC_WIRELESS, "r");
+  if (f == NULL) {
+    IFDEBUG_PRINT("Can't open wifi file");
+    return wifi_result;
+  }
+  
+  ptr = wifi_result;
+  
+  cpt = 0;
+  
+  /* ignore two first line (header) */
+  (void) (fgets(line, LINE_SIZE, f));
+  (void) (fgets(line, LINE_SIZE, f));
+  
+  /* For each interface */
+  while ((fgets(line, LINE_SIZE, f)) != NULL && cpt < NB_WIFI_INTERFACE) {
+    if (strstr(line, ":") != NULL){
+      sscan_net_wireless(line, &power);
+      assert(ptr-wifi_result+5 < WIFI_RESULT_SIZE);
+      ptr += myprint_percentage_s(ptr, power);
+      cpt++;
+    }
+  }
+
+  if (fclose(f) == EOF){
+    perror("Closing proc Wifi file ");
+  }
+
+  return wifi_result;
 }
 
 char * init_wifi(char * UNUSED(conf_line)){
-	wifi_result[0]='\0';
-	return "Wifi ";
+
+  wifi_result[0] = '\0';
+
+  return "Wifi ";
 }
 
 void exit_wifi(){
 
 }
-
-
