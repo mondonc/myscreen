@@ -32,7 +32,7 @@ extern char line[];
 */
 static const char *jump_separators(const char *line) {
 
-  while (*line && strchr(PROC_FILES_SEPARATORS_CHARS, *line))
+  while (*line && is_proc_separators(*line))
     line++;
   return line;
 }
@@ -52,17 +52,17 @@ static const char *copy_info(const char *line, char *buffer, size_t size) {
   
 
   /* copy the word-info */
-  for (i = 0; i < size - 1 && strchr(PROC_FILES_SEPARATORS_CHARS, line[i]) == NULL; i++)
+  for (i = 0; i < size - 1 && isnot_proc_separators(line[i]); i++)
     buffer[i] = line[i];
   buffer[i] = '\0';
   line += i;
   
   /* if buffer is too small to copy the entire word */
-  if (i >= size - 1 && strchr(PROC_FILES_SEPARATORS_CHARS, line[size - i - 1]) == NULL) {
+  if (i >= size - 1 && isnot_proc_separators(line[size - i - 1])) {
     IFDEBUG(fprintf(stderr, "Error : disks_usage: %s: too long word size for '%s[...]'\n",
 		    PROC_MOUNTS, buffer));
     /* move 'line' to the end of the word */
-    while (strchr(PROC_FILES_SEPARATORS_CHARS, *line) == NULL)
+    while (isnot_proc_separators(*line))
       line++;
   }
 

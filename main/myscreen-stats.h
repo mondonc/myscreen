@@ -97,6 +97,8 @@
 #define FALSE 0
 
 #define PROC_FILES_SEPARATORS_CHARS " \t"
+#define is_proc_separators(c) (c == ' ' || c ==  '\t')
+#define isnot_proc_separators(c) !is_proc_separators(c)
 
 int main(/*int argc, char ** argv*/);
 void end_wait();

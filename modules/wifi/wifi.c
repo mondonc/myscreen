@@ -31,7 +31,7 @@ static char wifi_result[WIFI_RESULT_SIZE]; /* Returned result */
 */
 static const char *jump_separators(const char *line) {
 
-  while (*line && strchr(PROC_FILES_SEPARATORS_CHARS, *line))
+  while (*line && is_proc_separators(*line))
     line++;
   return line;
 }
@@ -41,7 +41,7 @@ static const char *jump_separators(const char *line) {
 */
 static const char *jump_info(const char *line) {
 
-  while (strchr(PROC_FILES_SEPARATORS_CHARS, *line) == NULL)
+  while (isnot_proc_separators(*line))
     line++;
   return line;
 }
