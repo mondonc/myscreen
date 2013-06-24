@@ -26,26 +26,6 @@
 extern char line[];
 static char wifi_result[WIFI_RESULT_SIZE]; /* Returned result */
 
-/*
-** move 'line' pointer to the next word of the line, returning it
-*/
-static const char *jump_separators(const char *line) {
-
-  while (*line && is_proc_separators(*line))
-    line++;
-  return line;
-}
-
-/*
-** move 'line' pointer to the next sepatator_char of the line, returning it
-*/
-static const char *jump_info(const char *line) {
-
-  while (isnot_proc_separators(*line))
-    line++;
-  return line;
-}
-
 static int sscan_net_wireless(const char *line, int *power) {
 
   /* jump interface name */

@@ -78,6 +78,7 @@
 
 #include <tools.h>
 #include <parse-config.h>
+#include <proc_tools.h>
 
 /***********/
 /* MODULES */
