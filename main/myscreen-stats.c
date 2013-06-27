@@ -83,16 +83,13 @@ void end_wait(){
 /* 
  * Exit of all modules 
  */
-static void exit_modules(){
+static void exit_modules(int nb_modules){
 
 	int cpt;
 
-	cpt = 0;
-	/* For each module */
-	/* BUG TODO */
-	while (exit_current_conf[cpt] != 0) {
+	for (cpt = 0; cpt < nb_modules ; cpt++ ){
 		assert(cpt<NB_MODULES_MAX);
-		exit_current_conf[cpt++]();
+		exit_current_conf[cpt]();
 	}
 }
 
@@ -163,7 +160,7 @@ int main (/*int argc, char ** argv*/)
 
 			/* Modules's exit calls */
 			DEBUG_INFO("Exit of all modules")
-			exit_modules();
+			exit_modules(nb_modules);
 
 			IFONESHOT(exit(EXIT_SUCCESS));
 
