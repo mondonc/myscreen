@@ -17,6 +17,12 @@
 
 */
 
+
+#define PROC_FILES_SEPARATORS_CHARS " \t"
+#define is_proc_separators(c) (c == ' ' || c ==  '\t' || c == '\0')
+#define isnot_proc_separators(c) !is_proc_separators(c)
+
+
 const char *jump_separators(const char *line);
 const char *jump_info(const char *line);
 const char *copy_info(const char *line, char *buffer, size_t size);
