@@ -19,7 +19,7 @@ Unit tests are provided by *assert*. Asserts should be wrote to ensure the state
 
 For instance, before using pointer, you can assert that it is not *NULL*.
 
-  assert(pointer != NULL);
+	assert(pointer != NULL);
 
 But asserts are only present when you compile in **debug** or **oneshot** mode. In the default mode (using make without argument), the flag *-NDEBUG* remove  all asserts ! So please, use it only to test your code and prevent bad future modifications. If you want to assert something in your algo, please use an *if* instead.
 
