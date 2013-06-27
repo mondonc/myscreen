@@ -16,3 +16,8 @@ myscreen-stats
 main/modules_list.c
 main/modules_list.h
 myscreenrc
+
+# temp files
+*.swp
+*~
+*.orig
