@@ -13,6 +13,8 @@ Download sources from [Github](https://github.com/mondonc/myscreen)
 	make
 	make install
 
+If you want to compile in debug mode, please see ![Developer page](http://myscreen.mondonc.org/index.php?page=doc/developers.md).
+
 ### Normal user (non-root) installation
 
 If you want to install MyScreen in your *${HOME}*, you can download sources and run :
