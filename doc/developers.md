@@ -31,7 +31,7 @@ Main files
 
 * *main/* : contains... the main files ! For instance, the main loop to display stats every 2 seconds. 
 
-* *modules.conf* : To enable modules compilation.
+* *Makefile* : run make help for details.
 
 Modules 
 ---

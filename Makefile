@@ -1,7 +1,10 @@
 #!/bin/make -f
 # This Makefile is part of myscreen project, under GPLv3
 # Clément Mondon
+#
 
+#> Makefile to compile myscreen-stats binary used in myscreen package 
+#> To disable module's compilation, please edit the Makefile and find the MODULES var 
 PACKAGE=myscreen
 TARGET := myscreen-stats
 
@@ -18,6 +21,8 @@ CFLAGS += -D_XOPEN_SOURCE=500
 LDFLAGS=
 CPPFLAGS=
 
+THIS_MAKEFILE := Makefile 
+
 # MultiArch support (32/64)
 ifdef DEB_HOST_ARCH_BITS
 	ifeq ($(DEB_HOST_ARCH_BITS),32)
@@ -29,11 +34,11 @@ ifdef DEB_HOST_ARCH_BITS
 endif
 
 # Modules support
-MODULES_CONF := modules.conf
--include $(MODULES_CONF)
-ifndef MODULES
-MODULES :=
-endif
+
+# Used to disable compilation of specific modules, and define module's order
+#MODULES :=  users uptime network battery wifi reboot loadaverage processes cpu disks_access disks_usage ram swap
+MODULES :=  users uptime network battery wifi reboot loadaverage processes cpu disks_access disks_usage ram swap
+
 MODULES_SRC := $(foreach dir, $(MODULES) , $(wildcard modules/$(dir)/*.c) )   
 MODULES_OBJ := $(MODULES_SRC:%.c=%.o)
 MAIN_SRC = main/myscreen-stats.c main/tools.c main/parse-config.c main/proc_tools.c
@@ -46,7 +51,6 @@ MODULES_COMMA_QR := $(foreach mod,$(MODULES_COMMA_R),,"$(mod)")
 MODULES_COMMA_RR := $(foreach mod,$(MODULES_COMMA_R),,$(mod))
 MODULES_M := $(firstword $(MODULES)) $(MODULES_COMMA_RR)
 MODULES_QM := "$(firstword $(MODULES))" $(MODULES_COMMA_QR)
-
 
 
 
@@ -82,10 +86,13 @@ $(TARGET): $(MYSCREEN_CONF) $(MODULE_LIST_H) $(MODULE_LIST_OBJ) $(MODULES_OBJ) $
 	$(CC) $(MARCH) $(MODULES_OBJ) $(MODULE_LIST_OBJ) $(MAIN_OBJ) -o $(TARGET) $(LDFLAGS)
 
 # Help
-help : dump ## Display help 
-		@grep '##' Makefile | grep -v "grep " | sed s/'##'/'\n    '/ | sed s/$$/'\n'/
+help : ## Display this help 
+	@echo "---"
+	@grep '^#>' Makefile | sed s/'#>'/' '/ 
+	@echo "---"
+	@grep '##' Makefile | grep -v "grep " | sed s/'^\(.*\):.*##\(.*\)'/'* \1 : \2'/ 
 
-install: $(TARGET) ##Install myscreen
+install: $(TARGET) ## Install myscreen
 		install -d $(DESTDIR)/etc/
 		cp $(SCREEN_CONF) $(DESTDIR)/etc/
 		cp $(MYSCREEN_CONF) $(DESTDIR)/etc/
@@ -123,14 +130,8 @@ build-local-install: pre-build-local-install realclean $(TARGET) install ## Comp
 pre-build-local-install: 
 	mkdir -p $(DESTDIR)
 
-$(MODULES_CONF):
-	@echo -n "Generating $(MODULES_CONF)...        "
-	@echo 'MODULES := ' `ls modules/` > $@
-	@echo " [OK]"
-
-
 # Dependencies
-$(MODULE_LIST_H): $(MODULES_CONF)
+$(MODULE_LIST_H): $(THIS_MAKEFILE)
 	@echo -n "Generating $(MODULE_LIST_H)..."
 	@echo '\n/* This file is auto-generated */\n\n#ifndef _MODULES_H\n#define _MODULES_H\n\n#include "myscreen-stats.h"\n' >$(MODULE_LIST_H)
 	@for m in $(MODULES) ; do echo "#include \"$${m}/$${m}.h\" " >> $(MODULE_LIST_H)   ; done 
@@ -138,7 +139,7 @@ $(MODULE_LIST_H): $(MODULES_CONF)
 	@echo '\n#endif\n' >> $(MODULE_LIST_H)
 	@echo " [OK]"
 
-$(MODULE_LIST_C): $(MODULES_CONF)
+$(MODULE_LIST_C): $(THIS_MAKEFILE)
 	@echo -n "Generating $(MODULE_LIST_C)..."
 	@echo '\n/* This file is auto-generated */\n#include "$(notdir $(MODULE_LIST_H))"\n' >$(MODULE_LIST_C)
 	@echo 'char * modules[] = { $(MODULES_QM) };' >> $(MODULE_LIST_C)
@@ -148,7 +149,7 @@ $(MODULE_LIST_C): $(MODULES_CONF)
 	@echo 'void (*exit_mod[NB_MODULES_MAX])(const char * conf_line) = {' `echo '$(MODULES_M)' | sed -e 's/\([A-Za-z][A-Za-z_]*\)/exit_\1/g'`  '};' >> $(MODULE_LIST_C)
 	@echo " [OK]"
 
-$(MYSCREEN_CONF): $(MODULES_CONF)
+$(MYSCREEN_CONF): $(THIS_MAKEFILE)
 	@echo -n "Generating $(MYSCREEN_CONF)...          "
 # Header
 	@echo "# Version 0.9" > $(MYSCREEN_CONF)
@@ -204,4 +205,4 @@ $(PKG_BIN) :
 	apt-get -y install $(strip $(subst ., , $(suffix $(filter $@%, $(PACKAGES) ) ) ) )
 
 
-.PHONY: dump clean realclean help new-module cppcheck
+.PHONY: clean realclean help new-module cppcheck
