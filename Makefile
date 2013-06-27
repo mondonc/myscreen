@@ -148,7 +148,7 @@ $(MODULE_LIST_C): $(MODULES_CONF)
 	@echo 'void (*exit_mod[NB_MODULES_MAX])(const char * conf_line) = {' `echo '$(MODULES_M)' | sed -e 's/\([A-Za-z][A-Za-z_]*\)/exit_\1/g'`  '};' >> $(MODULE_LIST_C)
 	@echo " [OK]"
 
-$(MYSCREEN_CONF):
+$(MYSCREEN_CONF): $(MODULES_CONF)
 	@echo -n "Generating $(MYSCREEN_CONF)...          "
 # Header
 	@echo "# Version 0.9" > $(MYSCREEN_CONF)
