@@ -118,7 +118,7 @@ static void loop_stat(int nb_modules){
 		/* Display END and wait between two stats's generation*/
 		(void) end_wait();
 
-		IFONESHOT(stats_loop = FALSE);
+		IFONESHOT(if ((stats_loop++) >= 30 ) stats_loop = FALSE; );
 	}
 }
 
