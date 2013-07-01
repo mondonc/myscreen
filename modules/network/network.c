@@ -239,7 +239,7 @@ char * init_network(char * confline){
 			strcpy(network_result,"selected device: ");
 		} else {
 			*interface = '\0';
-			strcpy(network_result,"no network found ");
+			strcpy(network_result,"no network found");
 		}
 
 	} else {
@@ -250,7 +250,7 @@ char * init_network(char * confline){
 	no_activity_count=0;
 	/* Build "no activity" string */
 	assert(strlen(" no activity on ")+INTERFACE_SIZE+2 <= NETWORK_RESULT_SIZE);
-	strcpy(no_activity," no activity on ");
+	strcpy(no_activity,"no activity on ");
 	strcat(no_activity,interface);
 	strcat(no_activity, " ");
 
