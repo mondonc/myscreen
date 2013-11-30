@@ -133,15 +133,15 @@ pre-build-local-install:
 # Dependencies
 $(MODULE_LIST_H): $(THIS_MAKEFILE)
 	@echo -n "Generating $(MODULE_LIST_H)..."
-	@echo '\n/* This file is auto-generated */\n\n#ifndef _MODULES_H\n#define _MODULES_H\n\n#include "myscreen-stats.h"\n' >$(MODULE_LIST_H)
+	@echo -e '\n/* This file is auto-generated */\n\n#ifndef _MODULES_H\n#define _MODULES_H\n\n#include "myscreen-stats.h"\n' >$(MODULE_LIST_H)
 	@for m in $(MODULES) ; do echo "#include \"$${m}/$${m}.h\" " >> $(MODULE_LIST_H)   ; done 
-	@echo '\n#define NB_MODULES_MAX $(words $(MODULES))\n' >> $(MODULE_LIST_H)
-	@echo '\n#endif\n' >> $(MODULE_LIST_H)
+	@echo -e '\n#define NB_MODULES_MAX $(words $(MODULES))\n' >> $(MODULE_LIST_H)
+	@echo -e '\n#endif\n' >> $(MODULE_LIST_H)
 	@echo " [OK]"
 
 $(MODULE_LIST_C): $(THIS_MAKEFILE)
 	@echo -n "Generating $(MODULE_LIST_C)..."
-	@echo '\n/* This file is auto-generated */\n#include "$(notdir $(MODULE_LIST_H))"\n' >$(MODULE_LIST_C)
+	@echo -e '\n/* This file is auto-generated */\n#include "$(notdir $(MODULE_LIST_H))"\n' >$(MODULE_LIST_C)
 	@echo 'char * modules[] = { $(MODULES_QM) };' >> $(MODULE_LIST_C)
 	@echo 'char * modules_color[] = {' `echo '$(MODULES_M)' | sed -e 's/\([a-zA-Z][a-z_A-Z]*\)/COLOR_\U\1/g'`  '};' >> $(MODULE_LIST_C)
 	@echo 'char * (*main_mod[NB_MODULES_MAX])() = { $(MODULES_M) };' >> $(MODULE_LIST_C)
