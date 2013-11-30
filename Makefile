@@ -150,6 +150,11 @@ $(MODULE_LIST_C): $(THIS_MAKEFILE)
 	@$(ECHO) 'void (*exit_mod[NB_MODULES_MAX])(const char * conf_line) = {' `echo '$(MODULES_M)' | sed -e 's/\([A-Za-z][A-Za-z_]*\)/exit_\1/g'`  '};' >> $(MODULE_LIST_C)
 	@$(ECHO) " [OK]"
 
+
+# Generate myscreenrc, assembling the configuration file of each module
+myscreen-conf: clean-conf $(MYSCREEN_CONF) ## (re)generate myscreen configuration file
+clean-conf:
+	@$(RM) $(MYSCREEN_CONF)
 $(MYSCREEN_CONF): $(THIS_MAKEFILE)
 	@$(ECHO) -n "Generating $(MYSCREEN_CONF)...          "
 # Header
