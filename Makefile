@@ -10,6 +10,7 @@ TARGET := myscreen-stats
 
 # External tools
 RM=rm -f
+ECHO=/bin/echo
 DOC=doc
 LOG_STATIC := log-static-analysis
 
@@ -132,38 +133,38 @@ pre-build-local-install:
 
 # Dependencies
 $(MODULE_LIST_H): $(THIS_MAKEFILE)
-	@echo -n "Generating $(MODULE_LIST_H)..."
-	@echo -e '\n/* This file is auto-generated */\n\n#ifndef _MODULES_H\n#define _MODULES_H\n\n#include "myscreen-stats.h"\n' >$(MODULE_LIST_H)
+	@$(ECHO) -n "Generating $(MODULE_LIST_H)..."
+	@$(ECHO) -e '\n/* This file is auto-generated */\n\n#ifndef _MODULES_H\n#define _MODULES_H\n\n#include "myscreen-stats.h"\n' >$(MODULE_LIST_H)
 	@for m in $(MODULES) ; do echo "#include \"$${m}/$${m}.h\" " >> $(MODULE_LIST_H)   ; done 
-	@echo -e '\n#define NB_MODULES_MAX $(words $(MODULES))\n' >> $(MODULE_LIST_H)
-	@echo -e '\n#endif\n' >> $(MODULE_LIST_H)
-	@echo " [OK]"
+	@$(ECHO) -e '\n#define NB_MODULES_MAX $(words $(MODULES))\n' >> $(MODULE_LIST_H)
+	@$(ECHO) -e '\n#endif\n' >> $(MODULE_LIST_H)
+	@$(ECHO) " [OK]"
 
 $(MODULE_LIST_C): $(THIS_MAKEFILE)
-	@echo -n "Generating $(MODULE_LIST_C)..."
-	@echo -e '\n/* This file is auto-generated */\n#include "$(notdir $(MODULE_LIST_H))"\n' >$(MODULE_LIST_C)
-	@echo 'char * modules[] = { $(MODULES_QM) };' >> $(MODULE_LIST_C)
-	@echo 'char * modules_color[] = {' `echo '$(MODULES_M)' | sed -e 's/\([a-zA-Z][a-z_A-Z]*\)/COLOR_\U\1/g'`  '};' >> $(MODULE_LIST_C)
-	@echo 'char * (*main_mod[NB_MODULES_MAX])() = { $(MODULES_M) };' >> $(MODULE_LIST_C)
-	@echo 'char * (*init_mod[NB_MODULES_MAX])(char * conf_line) = {' `echo '$(MODULES_M)' | sed -e 's/\([A-Za-z][a-z_A-Z]*\)/init_\1/g'`  '};' >> $(MODULE_LIST_C)
-	@echo 'void (*exit_mod[NB_MODULES_MAX])(const char * conf_line) = {' `echo '$(MODULES_M)' | sed -e 's/\([A-Za-z][A-Za-z_]*\)/exit_\1/g'`  '};' >> $(MODULE_LIST_C)
-	@echo " [OK]"
+	@$(ECHO) -n "Generating $(MODULE_LIST_C)..."
+	@$(ECHO) -e '\n/* This file is auto-generated */\n#include "$(notdir $(MODULE_LIST_H))"\n' >$(MODULE_LIST_C)
+	@$(ECHO) 'char * modules[] = { $(MODULES_QM) };' >> $(MODULE_LIST_C)
+	@$(ECHO) 'char * modules_color[] = {' `echo '$(MODULES_M)' | sed -e 's/\([a-zA-Z][a-z_A-Z]*\)/COLOR_\U\1/g'`  '};' >> $(MODULE_LIST_C)
+	@$(ECHO) 'char * (*main_mod[NB_MODULES_MAX])() = { $(MODULES_M) };' >> $(MODULE_LIST_C)
+	@$(ECHO) 'char * (*init_mod[NB_MODULES_MAX])(char * conf_line) = {' `echo '$(MODULES_M)' | sed -e 's/\([A-Za-z][a-z_A-Z]*\)/init_\1/g'`  '};' >> $(MODULE_LIST_C)
+	@$(ECHO) 'void (*exit_mod[NB_MODULES_MAX])(const char * conf_line) = {' `echo '$(MODULES_M)' | sed -e 's/\([A-Za-z][A-Za-z_]*\)/exit_\1/g'`  '};' >> $(MODULE_LIST_C)
+	@$(ECHO) " [OK]"
 
 $(MYSCREEN_CONF): $(THIS_MAKEFILE)
-	@echo -n "Generating $(MYSCREEN_CONF)...          "
+	@$(ECHO) -n "Generating $(MYSCREEN_CONF)...          "
 # Header
-	@echo "# Version 0.9" > $(MYSCREEN_CONF)
-	@echo "# Auto-generated configuration file of myscreen" >> $(MYSCREEN_CONF)
-	@echo "#" >> $(MYSCREEN_CONF)
-	@echo "# SYNTAX:" >> $(MYSCREEN_CONF)
-	@echo "#" >> $(MYSCREEN_CONF)
-	@echo "# to activate a module      ->   module_name   OR   module_name = OPTION" >> $(MYSCREEN_CONF)
-	@echo "# to desactivate a module   ->   comment it !" >> $(MYSCREEN_CONF)
-	@echo "#" >> $(MYSCREEN_CONF)
-	@echo "# If a module isn't mentioned, it's considerated as disable\n\n" >> $(MYSCREEN_CONF)
+	@$(ECHO) "# Version 0.9" > $(MYSCREEN_CONF)
+	@$(ECHO) "# Auto-generated configuration file of myscreen" >> $(MYSCREEN_CONF)
+	@$(ECHO) "#" >> $(MYSCREEN_CONF)
+	@$(ECHO) "# SYNTAX:" >> $(MYSCREEN_CONF)
+	@$(ECHO) "#" >> $(MYSCREEN_CONF)
+	@$(ECHO) "# to activate a module      ->   module_name   OR   module_name = OPTION" >> $(MYSCREEN_CONF)
+	@$(ECHO) "# to desactivate a module   ->   comment it !" >> $(MYSCREEN_CONF)
+	@$(ECHO) "#" >> $(MYSCREEN_CONF)
+	@$(ECHO) "# If a module isn't mentioned, it's considerated as disable\n\n" >> $(MYSCREEN_CONF)
 # Body
 	@cat $(foreach mod,$(MODULES),modules/$(mod)/$(mod).conf) >> $(MYSCREEN_CONF)
-	@echo " [OK]"
+	@$(ECHO) " [OK]"
 
 
 %.o : %.c %.h
@@ -193,7 +194,7 @@ PKG_NAME := $(subst ., , $(PKG_NAME_WITH_DOT))
 static-analysis : cppcheck ## Static analysis of source code with cppcheck, splint
 
 cppcheck: .pkg_cppcheck
-	@echo -n "" > $(LOG_STATIC)
+	@$(ECHO) -n "" > $(LOG_STATIC)
 	cppcheck $(INCLUDES) --enable=all `find . -name *.c` 1>/dev/null 2>>$(LOG_STATIC) 
 	@if ! [ "`cat $(LOG_STATIC) | wc -l`" = "0" ] ; then cat $(LOG_STATIC) ; return 1 ; fi
 
@@ -201,7 +202,7 @@ $(PKG_ALL):
 	make -s $(basename $(filter %$(strip $(subst .pkg_, , $@)), $(PACKAGES) ) )
 
 $(PKG_BIN) : 
-	@echo "I can't find $@, trying to install it."
+	@$(ECHO) "I can't find $@, trying to install it."
 	apt-get -y install $(strip $(subst ., , $(suffix $(filter $@%, $(PACKAGES) ) ) ) )
 
 
