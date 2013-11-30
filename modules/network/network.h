@@ -23,15 +23,24 @@
 #include <string.h>
 #include <myscreen-stats.h>
 
+#include <arpa/inet.h>
+#include <sys/socket.h>
+#include <netdb.h>
+#include <ifaddrs.h>
+#include <stdlib.h>
+#include <unistd.h>
+
 #define GW_SIZE 9
 #define INTERFACE_SIZE 5
 #define REFRESH_TIME 20 /*Refresh interface when no_activity > REFRESH_TIME (realtime is REFRESH_TIME * TIME) */
 #define PROC_NET_DEV "/proc/net/dev"
 #define COLOR_NETWORK MAGENTA BOLD
-#define NETWORK_RESULT_SIZE 30 
+#define NETWORK_RESULT_SIZE 50 
 #define PROC_NET_ROUTE "/proc/net/route"
+#define IP_ADDRESS_SIZE 16
 
 #define OPT_AUTO "auto"
+#define OPT_IP "ip"
 
 #define PROC_NET_INTERFACE_SIZE (INTERFACE_SIZE+1)
 #define NET_NO_ACTIVITY_SIZE (INTERFACE_SIZE+17+1+1)
