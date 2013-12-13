@@ -123,70 +123,81 @@ static int update_up_down(unsigned long * up, unsigned long * down){
 	return flag;
 }
 
-
-
 /*
 ** Updates the IPv4 associated to the current interface
 ** The global char[] 'host' is filled out by the IP found
 ** The format is 'x.x.x.x' where x is an integer between 0 and 255.
-** This function returns 0 on success, 1 if no IP was found
+** This function returns 0 on success, -1 if no IP was found or
+** an error occurred.
 */
 static int update_ip_address(void)
 {
   struct ifaddrs *ifaddr, *ifa;
   int found;
-
-  /* cleaning host */
+  
+  /* cleanup host */
   host[0] = '\0';
 
-  /* creating the linked list */
+  /* create the linked list */
   if (getifaddrs(&ifaddr) == -1)
-    perror("getifaddrs");
+    {
+      perror("getifaddrs");
+      return -1;
+    }
 
-  found = 0;
+  found = FALSE;
   /* while no IPv4 found and until the end of list */
   for (ifa = ifaddr; !found && ifa != NULL; ifa = ifa->ifa_next)
     {
       if (ifa->ifa_addr == NULL)
-	continue;
+	continue;	    
 
-      /* is the asked interface and IPv4 ? */
+      /* is the asked interface and is IPv4 ? */
       if (strcmp(ifa->ifa_name , interface) == 0 &&
 	  ifa->ifa_addr->sa_family == AF_INET)
 	{
-	  /* filling host with IPv4 */
+	  
+	  /* fill host with IPv4 */ 
 	  if (getnameinfo(ifa->ifa_addr, sizeof(struct sockaddr_in),
 			  host, IP_ADDRESS_SIZE, NULL, 0, NI_NUMERICHOST) == 0)
 	    {
-	      found = 1;
+	      found = TRUE;
 	    }
 	}
     }
-  
-  /* freeing linked list */
+
+  /* display a debug message if no ip founded */
+  IFDEBUG(if (!found) { IFDEBUG_PRINT("Network: could not found the IP\n"); } );
+
+  /* free linked list */
   freeifaddrs(ifaddr);
 
-  /* return 0 if an IP was found, else 1 */
-  return found ? 0 : 1;
+  /* return 0 if an IP was found, else -1 */
+  return found ? 0 : -1;
 }
 
 /*
 ** Writes the current IPv4 in the parameter buffer
+** This function returns 0 on success, and
+** -1 if the string 'host' does not contain the ip address.
 */
 static int write_ip_address(char *buffer)
 {
   int i;
-
+  
+  assert(buffer != NULL);
+  /* check if the string 'host' has been set */
   if (host[0] == '\0')
-    return 1;
-
+    return -1;
+  
   *(buffer++) = '(';
-  i = 0;
-  while (host[i])
+  
+  /* copy the ip from 'host' to 'buffer' */
+  for (i = 0; host[i]; i++)
     {
       *(buffer++) = host[i];
-      i++;
     }
+  
   *(buffer++) = ')';
   *(buffer++) = ' ';
   *buffer = '\0';
@@ -223,10 +234,25 @@ char * network(){
 				return init_network(conf_line);	
 			} else {
 				no_activity_count++;
-				return no_activity;
-			}
-		} else {
+
+				if (display_ip) {
+				  /* return no_activity + ip adress */
+					assert(NETWORK_RESULT_SIZE >= strlen(no_activity)
+					       + IP_ADDRESS_SIZE + 3 + 1);
+					strncpy(network_result, no_activity, NETWORK_RESULT_SIZE);
+					write_ip_address(network_result + strlen(network_result));
+					return network_result;
+				}
+				else {
+					return no_activity;
+				}
+ 			}
+		} else if (no_activity_count > 0) {
 			no_activity_count=0;
+			/* update current ip */
+			if (display_ip) {
+				update_ip_address();
+			}
 		}
 
 		/*Calculate Rate*/
@@ -258,11 +284,12 @@ char * network(){
 		}
 
 		assert(NETWORK_RESULT_SIZE >= 4+ 5*2 +1);
-		(void)snprintf(network_result, NETWORK_RESULT_SIZE, "v%5.1f%s ^%5.1f%s ", d_rate, d_unit, u_rate, u_unit);
-		
+		(void)snprintf(network_result, NETWORK_RESULT_SIZE, "v%5.1f%s ^%5.1f%s ",
+			       d_rate, d_unit, u_rate, u_unit);
+
 		/* write ipv4 in network_result */
-		assert(NETWORK_RESULT_SIZE >= strlen(network_result)+ IP_ADDRESS_SIZE+3 + 1);
 		if (display_ip) {
+			assert(NETWORK_RESULT_SIZE >= strlen(network_result)+ IP_ADDRESS_SIZE + 3 + 1);
 			write_ip_address(network_result + strlen(network_result));
 		}
 
