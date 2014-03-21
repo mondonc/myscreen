@@ -13,7 +13,7 @@
 	GNU General Public License for more details.
 
 	You should have received a copy of the GNU General Public License
-	along with myscreen.  If not, see http://www.gnu.org/licenses/. 
+	along with myscreen.  If not, see http://www.gnu.org/licenses/.
 
 */
 
@@ -25,8 +25,7 @@ extern char * modules_color[]; 						/* For each module, display color */
 extern void (*exit_mod[NB_MODULES_MAX])();    /* For each module, function to exit */
 
 /* Current configuration read by parse-config */
-char * (*current_conf[NB_MODULES_MAX])();
-char * (*exit_current_conf[NB_MODULES_MAX])();
+int current_conf[NB_MODULES_MAX];
 
 /* Multiple usages var */
 char line[LINE_SIZE + 1];
@@ -41,8 +40,8 @@ struct sysinfo si;
 const char * empty_string = "";
 
 
-/* 
- * Get sysinfo struct 
+/*
+ * Get sysinfo struct
  */
 void get_sysinfo() {
 	if (sysinfo(&si) == -1){
@@ -51,25 +50,17 @@ void get_sysinfo() {
 	}
 }
 
-/* 
- * Find module index 
+/*
+ * Call module's function and display stat
  */
-int find_module_index(int cpt){
-	int module_idx = 0;
-	while ( current_conf[cpt] != main_mod[module_idx] && ++module_idx );
-	return module_idx;
+void display_module_stats(int module_idx){
+	IFDEBUG(printf("(%d) [%s]\n", module_idx, main_mod[module_idx]()););
+	IFNDEBUG((void)fputs(modules_color[module_idx], stdout);
+		 (void)fputs(main_mod[module_idx](), stdout);)
 }
 
-/* 
- * Call module's function and display stat 
- */
-void display_module_stats(short module_idx, short cpt){
-	IFDEBUG(printf("(%d) [%s]\n", module_idx, current_conf[cpt]()););
-	IFNDEBUG((void)fputs(modules_color[module_idx], stdout); (void)fputs(current_conf[cpt](), stdout);)
-}
-
-/* 
- * Display END and wait 
+/*
+ * Display END and wait
  */
 void end_wait(){
 	/* Display's end */
@@ -80,8 +71,8 @@ void end_wait(){
 	(void)sleep(TIME);
 }
 
-/* 
- * Exit of all modules 
+/*
+ * Exit of all modules
  */
 static void exit_modules(int nb_modules){
 
@@ -89,17 +80,16 @@ static void exit_modules(int nb_modules){
 
 	for (cpt = 0; cpt < nb_modules ; cpt++ ){
 		assert(cpt<NB_MODULES_MAX);
-		exit_current_conf[cpt]();
+		exit_mod[current_conf[cpt]]();
 	}
 }
 
-/* 
- * Loop to print stats 
+/*
+ * Loop to print stats
  */
 static void loop_stat(int nb_modules){
 
 	int cpt;
-	int module_idx;
 
 	assert(nb_modules<=NB_MODULES_MAX);
 
@@ -109,10 +99,7 @@ static void loop_stat(int nb_modules){
 
 		for(cpt=0;cpt<nb_modules;cpt++){
 
-			/* TODO : Improvement should be to maintain a translation array build at the begin to avoid operation at each loop  */
-			module_idx = find_module_index(cpt);
-
-			(void) display_module_stats(module_idx, cpt);
+			(void) display_module_stats(current_conf[cpt]);
 		}
 
 		/* Display END and wait between two stats's generation*/
@@ -123,8 +110,8 @@ static void loop_stat(int nb_modules){
 }
 
 
-/* 
- * MAIN function 
+/*
+ * MAIN function
  */
 int main (/*int argc, char ** argv*/)
 {
@@ -135,22 +122,22 @@ int main (/*int argc, char ** argv*/)
 	DEBUG_INFO("Running in debug mode")
 
 	/* Install signals */
-	install_signals();   
+	install_signals();
 
 	/* Always True, also when myscreen-stats is stopped */
 	while(TRUE){
 
 		/* Loop to read_conf and init all modules , display stats, and exit modules */
 		/* main_loop become false when receiving signal */
-		while (main_loop){ 
+		while (main_loop){
 
 			/* stats_loop become false when receiving signal */
-			stats_loop=TRUE; 
+			stats_loop=TRUE;
 
 			/* current_conf initialisation and modules initiatlisation calls */
 			DEBUG_INFO("Reading configuration file")
 			nb_modules = get_configuration();
-			
+
 			assert(nb_modules>=0 && nb_modules <= NB_MODULES_MAX);
 
 			/* MAIN LOOP (print all stats while stats_loop == TRUE ) */
