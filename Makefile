@@ -151,6 +151,9 @@ $(MODULE_LIST_C): $(THIS_MAKEFILE)
 	@$(ECHO) " [OK]"
 
 
+new-module: ## generate a new module
+	@./mkmodule
+
 # Generate myscreenrc, assembling the configuration file of each module
 myscreen-conf: clean-conf $(MYSCREEN_CONF) ## (re)generate myscreen configuration file
 clean-conf:

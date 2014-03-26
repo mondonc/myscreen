@@ -1,0 +1,142 @@
+#!/bin/sh
+#
+# Copyright 2014 Barthélémy Delemotte <barthelemy.delemotte@gmail.com>
+#
+#	This file is part of project myscreen.
+#
+# myscreen is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# myscreen is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with myscreen.  If not, see http://www.gnu.org/licenses/.
+#
+
+
+#
+# Module files are generated from patterns with the command sed.
+# Sequences {NAME} or {name} are replaced by the name of the module given
+# in parameter.
+#
+
+# echo the source pattern
+source_pattern()
+{
+    echo '/*Copyright 2009,2010,2011 Clément Mondon <clement.mondon@gmail.com>
+
+	This file is part of project myscreen.
+
+	myscreen is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	myscreen is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with myscreen.  If not, see http://www.gnu.org/licenses/.
+
+*/
+
+#include "{name}.h"
+
+char * {name}(){
+  return "";
+}
+
+char * init_{name}(char * UNUSED(confline)){
+  return "";
+}
+
+void exit_{name}(){
+}
+'
+}
+
+# echo the header pattern
+header_pattern()
+{
+    echo '/*Copyright 2009,2010,2011 Clément Mondon <clement.mondon@gmail.com>
+
+  This file is part of project myscreen.
+
+  myscreen is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  myscreen is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with myscreen.  If not, see http://www.gnu.org/licenses/.
+
+*/
+
+#ifndef _{NAME}_H
+#define _{NAME}_H
+
+#include <myscreen-stats.h>
+
+#define COLOR_{NAME} WHITE
+
+char * {name}();
+char * init_{name}(char * line);
+void exit_{name}();
+
+#endif
+'
+}
+
+# echo the conf file pattern
+conf_pattern()
+{
+    echo '{name}'
+}
+
+# read the pattern given in the std input, replace sequences,
+# and write it in the file destination
+build_from_pattern()
+{
+    dest=$1
+    echo -n "Generating $dest ... "
+    sed "s/{name}/$module_name/g" | sed "s/{NAME}/$module_name_upcase/g" > $dest
+    if [ $? -eq 0 ]; then
+	echo "[OK]"
+    else
+	echo "[FAIL]"
+    fi
+}
+
+if [ $# -lt 1 ]; then
+    echo -n "Enter the module name: "
+    read module_name
+    if [ $? -eq 1 ]; then
+	exit 1
+    fi
+else
+    module_name=$1
+fi
+
+module_name_upcase=$(echo $module_name | tr '[:lower:]' '[:upper:]')
+module_dir=./modules/$module_name
+
+mkdir $module_dir
+if [ $? -eq 1 ]; then
+    exit 1
+fi
+
+header_pattern | build_from_pattern $module_dir/$module_name.h
+source_pattern | build_from_pattern $module_dir/$module_name.c
+conf_pattern   | build_from_pattern $module_dir/$module_name.conf
