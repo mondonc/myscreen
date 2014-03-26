@@ -13,14 +13,14 @@
 	GNU General Public License for more details.
 
 	You should have received a copy of the GNU General Public License
-	along with myscreen.  If not, see http://www.gnu.org/licenses/. 
+	along with myscreen.  If not, see http://www.gnu.org/licenses/.
 
 */
 
 #include "network.h"
 
 /**
- * Display upload and download rate 
+ * Display upload and download rate
  */
 
 /* Gateway */
@@ -42,7 +42,7 @@ static short no_activity_count;
 extern char line[];
 static char network_result[NETWORK_RESULT_SIZE]; /*Returned result */
 
-static char display_ip; /* boolean, display ip if it's true */ 
+static char display_ip; /* boolean, display ip if it's true */
 static char host[IP_ADDRESS_SIZE]; /* the current IP */
 
 
@@ -100,13 +100,13 @@ static int update_up_down(unsigned long * up, unsigned long * down){
 
 	flag=FALSE;
 
-	/*Get recent values*/	
+	/*Get recent values*/
 	if ( (f=fopen(PROC_NET_DEV, "r")) ){
 
 	  /* jump two lines (header) */
 	  (void)(fgets(line, LINE_SIZE, f));
 	  (void)(fgets(line, LINE_SIZE, f));
-	  
+
 		while ((fgets(line, LINE_SIZE, f)) != NULL){
 			if (strstr(line, interface) != NULL){
 			  sscan_net_dev(line, down, up);
@@ -134,7 +134,7 @@ static int update_ip_address(void)
 {
   struct ifaddrs *ifaddr, *ifa;
   int found;
-  
+
   /* cleanup host */
   host[0] = '\0';
 
@@ -150,14 +150,14 @@ static int update_ip_address(void)
   for (ifa = ifaddr; !found && ifa != NULL; ifa = ifa->ifa_next)
     {
       if (ifa->ifa_addr == NULL)
-	continue;	    
+	continue;
 
       /* is the asked interface and is IPv4 ? */
       if (strcmp(ifa->ifa_name , interface) == 0 &&
 	  ifa->ifa_addr->sa_family == AF_INET)
 	{
-	  
-	  /* fill host with IPv4 */ 
+
+	  /* fill host with IPv4 */
 	  if (getnameinfo(ifa->ifa_addr, sizeof(struct sockaddr_in),
 			  host, IP_ADDRESS_SIZE, NULL, 0, NI_NUMERICHOST) == 0)
 	    {
@@ -184,20 +184,20 @@ static int update_ip_address(void)
 static int write_ip_address(char *buffer)
 {
   int i;
-  
+
   assert(buffer != NULL);
   /* check if the string 'host' has been set */
   if (host[0] == '\0')
     return -1;
-  
+
   *(buffer++) = '(';
-  
+
   /* copy the ip from 'host' to 'buffer' */
   for (i = 0; host[i]; i++)
     {
       *(buffer++) = host[i];
     }
-  
+
   *(buffer++) = ')';
   *(buffer++) = ' ';
   *buffer = '\0';
@@ -231,7 +231,7 @@ char * network(){
 
 			/* Update interface */
 			if (no_activity_count > REFRESH_TIME){
-				return init_network(conf_line);	
+				return init_network(conf_line);
 			} else {
 				no_activity_count++;
 
@@ -240,6 +240,9 @@ char * network(){
 					assert(NETWORK_RESULT_SIZE >= strlen(no_activity)
 					       + IP_ADDRESS_SIZE + 3 + 1);
 					strncpy(network_result, no_activity, NETWORK_RESULT_SIZE);
+					/* to avoid cppcheck error : strncpy doesn't null terminate the
+					   string systematically */
+					network_result[NETWORK_RESULT_SIZE-1] = '\0';
 					write_ip_address(network_result + strlen(network_result));
 					return network_result;
 				}
@@ -298,7 +301,7 @@ char * network(){
 		/* Update interface */
 	        IFDEBUG_PRINT(*interface ? "Can't read values of network file" : "no network found");
 		if (no_activity_count > REFRESH_TIME){
-			return init_network(conf_line);	
+			return init_network(conf_line);
 		} else {
 			no_activity_count++;
 			return "no network found ";
@@ -339,7 +342,7 @@ char * init_network(char * confline){
 			  if (strcmp(gw, "00000000") != 0){
 			    flag=TRUE;
 			  }
-			  
+
 			  /* update current ip */
 			  if (display_ip) {
 				update_ip_address();
@@ -360,7 +363,7 @@ char * init_network(char * confline){
 		}
 
 	} else {
-		strncpy(interface, conf_line, INTERFACE_SIZE); 
+		strncpy(interface, conf_line, INTERFACE_SIZE);
 		/* Build result string */
 		strcpy(network_result," configured to : ");
 	}
