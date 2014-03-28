@@ -15,7 +15,7 @@ DOC=doc
 LOG_STATIC := log-static-analysis
 
 # Compilation 
-CC=gcc
+CC?=gcc
 INCLUDES = -I main/ -I modules/
 CFLAGS = $(INCLUDES) -Wall -Werror -Wextra -ansi -pedantic
 CFLAGS += -D_XOPEN_SOURCE=500
@@ -37,8 +37,7 @@ endif
 # Modules support
 
 # Used to disable compilation of specific modules, and define module's order
-#MODULES :=  users uptime network battery wifi reboot loadaverage processes cpu disks_access disks_usage ram swap
-MODULES :=  users uptime network battery wifi reboot loadaverage processes cpu disks_access disks_usage ram swap
+MODULES := users uptime network battery wifi reboot loadaverage processes cpu sensor disks_access disks_usage ram swap
 
 MODULES_SRC := $(foreach dir, $(MODULES) , $(wildcard modules/$(dir)/*.c) )   
 MODULES_OBJ := $(MODULES_SRC:%.c=%.o)
