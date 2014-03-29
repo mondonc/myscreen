@@ -86,17 +86,4 @@ For instance :
 Write a new module
 ===
 
-To write a new module, the simplest way is to copy an existing module. For instance : 
-
-	cp -r modules/processes modules/NEWMODULE
-	sed -e 's/processes/NEWMODULE/g' -i modules/NEWMODULE/*
-	sed -e 's/PROCESSES/NEWMODULE/g' -i modules/NEWMODULE/*
-	for f in modules/NEWMODULE/* ; do mv $f `echo $f | sed -e 's/processes/NEWMODULE/'` ; done
-	Add NEWMODULE in the file modules.conf
-	make clean ; make
-
-And be happy ! 
-
-
-
-
+To write a new module, you can use scripts/mkmodule with make new-module.
