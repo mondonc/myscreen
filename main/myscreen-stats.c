@@ -85,6 +85,35 @@ static void exit_modules(int nb_modules){
 }
 
 /*
+** Display message pulled from the message queue
+*/
+static void display_message()
+{
+  /* debug */
+  assert(msg_queue_peek());
+  IFDEBUG(printf("(new message) [%s]\n", msg_queue_peek()));
+  assert(msg_queue_pop());
+
+  /* not debug */
+  IFNDEBUG(fputs(msg_queue_peek(), stdout));
+  IFNDEBUG((void)msg_queue_pop());
+}
+
+
+/*
+** Call all module's functions without display the result.
+*/
+static void update_stats(int nb_modules)
+{
+  int cpt;
+
+  for (cpt = 0; cpt < nb_modules; cpt++)
+    {
+      (void)main_mod[current_conf[cpt]]();
+    }
+}
+
+/*
  * Loop to print stats
  */
 static void loop_stat(int nb_modules){
@@ -97,9 +126,14 @@ static void loop_stat(int nb_modules){
 
 		get_sysinfo();
 
-		for(cpt=0;cpt<nb_modules;cpt++){
-
-			(void) display_module_stats(current_conf[cpt]);
+		if (!msg_queue_is_empty()) {
+			display_message();
+			update_stats(nb_modules);
+		}
+		else {
+			for(cpt=0;cpt<nb_modules;cpt++){
+				(void) display_module_stats(current_conf[cpt]);
+			}
 		}
 
 		/* Display END and wait between two stats's generation*/

@@ -13,7 +13,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with myscreen.  If not, see http://www.gnu.org/licenses/. 
+  along with myscreen.  If not, see http://www.gnu.org/licenses/.
 
 */
 
@@ -36,34 +36,34 @@
 #include <sys/types.h>
 
 /* DEBUG MACROS ?*/
-#ifdef DEBUG 
-#define IFDEBUG(instruction); instruction 
-#define IFDEBUG_PRINT(chaine); fputs(chaine, stdout); 
-#define DEBUG_INFO(chaine) fputs("#INFO: ", stdout); printf(chaine); fputs("\n", stdout); 
-#define DEBUG_WARNING(chaine) fputs("#WARNING: ", stdout); printf(chaine); fputs("\n", stdout); 
-#define DEBUG_ERROR(chaine) fputs("#ERROR: ", stdout); printf(chaine); fputs("\n", stdout); 
-#define DEBUG_MODULE(chaine,index,name,conf) printf("#MODULE %d (%s):", index, name); printf(chaine,conf); fputs("\n", stdout); 
-#define IFNDEBUG(instruction); /*no code*/ 
+#ifdef DEBUG
+#define IFDEBUG(instruction); instruction
+#define IFDEBUG_PRINT(chaine); fputs(chaine, stdout);
+#define DEBUG_INFO(chaine) fputs("#INFO: ", stdout); printf(chaine); fputs("\n", stdout);
+#define DEBUG_WARNING(chaine) fputs("#WARNING: ", stdout); printf(chaine); fputs("\n", stdout);
+#define DEBUG_ERROR(chaine) fputs("#ERROR: ", stdout); printf(chaine); fputs("\n", stdout);
+#define DEBUG_MODULE(chaine,index,name,conf) printf("#MODULE %d (%s):", index, name); printf(chaine,conf); fputs("\n", stdout);
+#define IFNDEBUG(instruction); /*no code*/
 #else
-#define IFDEBUG(instruction); /*no code*/ 
+#define IFDEBUG(instruction); /*no code*/
 #define IFDEBUG_PRINT(chaine); /*no code*/
 #define IFDEBUG_PRINF(chaine); /*no code*/
 #define DEBUG_INFO(chaine) /* no code */
 #define DEBUG_WARNING(chaine) /* no code */
 #define DEBUG_ERROR(chaine) /* no code */
 #define DEBUG_MODULE(chaine,index,name,conf) /* no code */
-#define IFNDEBUG(instruction); instruction 
+#define IFNDEBUG(instruction); instruction
 #endif
 
 /* ONESHOT MACROS */
 #ifdef ONESHOT
-#define IFONESHOT(instruction); instruction 
+#define IFONESHOT(instruction); instruction
 #else
-#define IFONESHOT(instruction); /*no code*/ 
+#define IFONESHOT(instruction); /*no code*/
 #endif
 
 
-/* To make unused-parameter enjoy */ 
+/* To make unused-parameter enjoy */
 #ifdef __GNUC__
 #  define UNUSED(x) UNUSED_ ## x __attribute__((__unused__))
 #else
@@ -79,6 +79,9 @@
 #include <tools.h>
 #include <parse-config.h>
 #include <proc_tools.h>
+
+/* include the message queue interface for main and modules */
+#include "msg_queue.h"
 
 /***********/
 /* MODULES */

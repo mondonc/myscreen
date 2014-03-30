@@ -41,7 +41,7 @@ MODULES := users uptime network battery wifi reboot loadaverage processes cpu se
 
 MODULES_SRC := $(foreach dir, $(MODULES) , $(wildcard modules/$(dir)/*.c) )   
 MODULES_OBJ := $(MODULES_SRC:%.c=%.o)
-MAIN_SRC = main/myscreen-stats.c main/tools.c main/parse-config.c main/proc_tools.c
+MAIN_SRC = main/myscreen-stats.c main/tools.c main/parse-config.c main/proc_tools.c main/msg_queue.c
 MAIN_OBJ = $(MAIN_SRC:%.c=%.o)
 MODULE_LIST_H := main/modules_list.h 
 MODULE_LIST_C := $(MODULE_LIST_H:%.h=%.c) 
