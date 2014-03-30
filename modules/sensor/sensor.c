@@ -146,7 +146,11 @@ char *init_sensor(char *confline)
     verbose = true;
   memset(&temp_info, 0, sizeof(temp_info_t));
   if (try_access_files(1) == -1)
-    return SENSOR_ERROR;
+    {
+      msg_queue_vpush("%ssensor: %scould not read temperature: %s",
+		      WHITE BOLD, COLOR_SENSOR, strerror(errno));
+      return "";
+    }
   temp_info.sensor_num = 1;
   get_label();
   get_temperature(&temp_info.critical, "crit");
