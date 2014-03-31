@@ -168,7 +168,8 @@ $(MYSCREEN_CONF): $(THIS_MAKEFILE)
 	@$(ECHO) "# to activate a module      ->   module_name   OR   module_name = OPTION" >> $(MYSCREEN_CONF)
 	@$(ECHO) "# to desactivate a module   ->   comment it !" >> $(MYSCREEN_CONF)
 	@$(ECHO) "#" >> $(MYSCREEN_CONF)
-	@$(ECHO) "# If a module isn't mentioned, it's considerated as disable\n\n" >> $(MYSCREEN_CONF)
+	@$(ECHO) "# If a module isn't mentioned, it's considerated as disable" >> $(MYSCREEN_CONF)
+	@$(ECHO) "" >> $(MYSCREEN_CONF)
 # Body
 	@cat $(foreach mod,$(MODULES),modules/$(mod)/$(mod).conf) >> $(MYSCREEN_CONF)
 	@$(ECHO) " [OK]"
