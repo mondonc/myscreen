@@ -1,3 +1,9 @@
+myscreen (0.91) stable; urgency=low
+
+  * New module sensor to display internal temperature, network module displays ipv4 address 
+
+ -- Clément MONDON <clement@mondonc.org>  Mon, 31 Mar 2014 18:39:09 +0200
+
 myscreen (0.9) stable; urgency=low
 
   * Stable version, some bug fixed, new repo and CI process
