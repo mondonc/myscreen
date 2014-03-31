@@ -28,7 +28,7 @@
 # echo the source pattern
 source_pattern()
 {
-    echo '/*Copyright 2009,2010,2011 Clément Mondon <clement.mondon@gmail.com>
+    echo '/*Copyright 2014 Contributor <contributor@contrib.com>
 
 	This file is part of project myscreen.
 
@@ -65,7 +65,7 @@ void exit_{name}(){
 # echo the header pattern
 header_pattern()
 {
-    echo '/*Copyright 2009,2010,2011 Clément Mondon <clement.mondon@gmail.com>
+    echo '/*Copyright 2014 Contributor <contributor@contrib.com>
 
   This file is part of project myscreen.
 
@@ -118,6 +118,10 @@ build_from_pattern()
 	echo "[FAIL]"
     fi
 }
+
+#
+# Main
+#
 
 if [ $# -lt 1 ]; then
     echo -n "Enter the module name: "
