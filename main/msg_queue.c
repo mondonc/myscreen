@@ -57,7 +57,7 @@ static msg_queue_t self; /* the queue itself */
 */
 static void _init_msg_queue(void)
 {
-  IFDEBUG_PRINT("initialize the messages queue");
+  IFDEBUG_PRINT("#DEBUG: initialize the messages queue\n");
   memset(&self, 0, sizeof(self));
   init = true;
 }
@@ -84,6 +84,11 @@ static msg_t *_push()
       self.push_idx = (self.push_idx + 1) % MAX_MSG_NBR;
       self.counter++;
     }
+  else
+    {
+      IFDEBUG_PRINT("#DEBUG: msg_queue is full: the last message "
+		    "could not be pushed\n");
+    }
   return msg;
 }
 
@@ -102,6 +107,10 @@ static bool _pop()
 
   if (self.counter == 0)
     return false;
+
+  IFDEBUG(printf("#INFO: msg_queue %lu/%d pop_idx=%lu push_idx=%lu\n",
+		 self.counter, MAX_MSG_NBR, self.pop_idx, self.push_idx));
+
   self.pop_idx = (self.pop_idx + 1) % MAX_MSG_NBR;
   self.counter--;
   return true;
@@ -144,19 +153,20 @@ bool msg_queue_is_empty(void)
 bool msg_queue_push(const char *str, const char *color)
 {
   msg_t *msg = _push();
-  char * buffer;
 
   assert(str);
+  /* If the next assertion fails, the message will be truncated ...
+     is it really a problem ? */
   assert(strlen(str) <= MAX_MSG_LENGTH);
 
   if (!msg)
     return false;
-  buffer = msg->buffer;
+  msg->buffer[0] = '\0'; /* lazy cleaning of the buffer */
   if (color) {
     (void)strncpy(msg->buffer, color, MAX_MSG_LENGTH);
     msg->buffer[MAX_MSG_LENGTH] = '\0';
   }
-  (void)strncat(msg->buffer, str, MAX_MSG_LENGTH - (msg->buffer - buffer));
+  (void)strncat(msg->buffer, str, MAX_MSG_LENGTH - strlen(msg->buffer));
   return true;
 }
 
