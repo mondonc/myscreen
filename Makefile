@@ -7,6 +7,10 @@
 #> To disable module's compilation, please edit the Makefile and find the MODULES var 
 PACKAGE=myscreen
 TARGET := myscreen-stats
+VERSION := 0.9
+
+# Used to disable compilation of specific modules, and define module's order
+MODULES := users uptime network battery wifi reboot loadaverage processes cpu sensor ram swap disks_access disks_usage
 
 # External tools
 RM=rm -f
@@ -36,8 +40,6 @@ endif
 
 # Modules support
 
-# Used to disable compilation of specific modules, and define module's order
-MODULES := users uptime network battery wifi reboot loadaverage processes cpu sensor ram swap disks_access disks_usage
 
 MODULES_SRC := $(foreach dir, $(MODULES) , $(wildcard modules/$(dir)/*.c) )   
 MODULES_OBJ := $(MODULES_SRC:%.c=%.o)
@@ -160,7 +162,7 @@ clean-conf:
 $(MYSCREEN_CONF): $(THIS_MAKEFILE)
 	@$(ECHO) -n "Generating $(MYSCREEN_CONF)...          "
 # Header
-	@$(ECHO) "# Version 0.9" > $(MYSCREEN_CONF)
+	@$(ECHO) "# Version ${VERSION}" > $(MYSCREEN_CONF)
 	@$(ECHO) "# Auto-generated configuration file of myscreen" >> $(MYSCREEN_CONF)
 	@$(ECHO) "#" >> $(MYSCREEN_CONF)
 	@$(ECHO) "# SYNTAX:" >> $(MYSCREEN_CONF)
