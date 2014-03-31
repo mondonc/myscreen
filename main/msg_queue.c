@@ -37,7 +37,7 @@
 /* a message */
 typedef		struct
 {
-  char		buffer[MAX_MSG_LENGTH];
+  char		buffer[MAX_MSG_LENGTH + 1];
 }		msg_t;
 
 /* the queue structure */
@@ -144,14 +144,19 @@ bool msg_queue_is_empty(void)
 bool msg_queue_push(const char *str, const char *color)
 {
   msg_t *msg = _push();
+  char * buffer;
 
   assert(str);
+  assert(strlen(str) <= MAX_MSG_LENGTH);
 
   if (!msg)
     return false;
-  if (color)
+  buffer = msg->buffer;
+  if (color) {
     (void)strncpy(msg->buffer, color, MAX_MSG_LENGTH);
-  (void)strncat(msg->buffer, str, MAX_MSG_LENGTH);
+    msg->buffer[MAX_MSG_LENGTH] = '\0';
+  }
+  (void)strncat(msg->buffer, str, MAX_MSG_LENGTH - (msg->buffer - buffer));
   return true;
 }
 
