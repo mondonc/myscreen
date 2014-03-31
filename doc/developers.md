@@ -42,7 +42,7 @@ Each module have to respect a convention. For instance, for a module called "mym
 
 This subdirectory contains all files of your module.
 
-* a file modules *modules/mymodule/mymodule.c*
+* a file *modules/mymodule/mymodule.c*
 
 This file have to declare some function : 
 
@@ -52,7 +52,7 @@ This file have to declare some function :
 
 	void exit_mymodule(); : called when myscreen exiting 
 
-* a file modules *modules/mymodule/mymodule.h*
+* a file *modules/mymodule/mymodule.h*
 
 This file contains at least : 
 
@@ -86,4 +86,4 @@ For instance :
 Write a new module
 ===
 
-To write a new module, you can use scripts/mkmodule with make new-module.
+A new module has to respect conventions described above. To help you, we wrote a small interactive script to define a new module : scripts/mkmodule. You can pass to it the module_name in parameter, or let it ask you.
