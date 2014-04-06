@@ -241,8 +241,9 @@ int get_configuration(){
 		if (fclose(f) == EOF){
 			perror("Closing Configuration file");
 		}
-		end_wait();
 	}
+
+	end_wait();
 
 	assert(nb_modules > -1 && nb_modules <= NB_MODULES_MAX);
 	return nb_modules;
