@@ -108,14 +108,12 @@ static bool _pop()
   if (self.counter == 0)
     return false;
 
-  DEBUG_INFO("msg_queue %lu/%d pop_idx=%lu push_idx=%lu\n",
-		 self.counter, MAX_MSG_NBR, self.pop_idx, self.push_idx);
+  IFDEBUG(printf("#INFO: msg_queue %lu/%d pop_idx=%lu push_idx=%lu\n",
+		 self.counter, MAX_MSG_NBR, self.pop_idx, self.push_idx));
 
   self.pop_idx = (self.pop_idx + 1) % MAX_MSG_NBR;
   self.counter--;
 
-	assert(self.counter >= 0);
-	assert(self.pop_idx >= 0);
   assert(self.pop_idx < MAX_MSG_NBR);
 
   return true;

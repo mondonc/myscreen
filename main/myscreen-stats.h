@@ -47,7 +47,6 @@
 #else
 #define IFDEBUG(instruction); /*no code*/
 #define IFDEBUG_PRINT(chaine); /*no code*/
-#define IFDEBUG_PRINF(chaine); /*no code*/
 #define DEBUG_INFO(chaine) /* no code */
 #define DEBUG_WARNING(chaine) /* no code */
 #define DEBUG_ERROR(chaine) /* no code */
