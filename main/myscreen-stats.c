@@ -1,4 +1,4 @@
-/*Copyright 2009,2010,2011,2012,2013 Clément Mondon <clement.mondon@gmail.com>
+/*Copyright 2009-2014 Clément Mondon <clement.mondon@gmail.com>
 
 	This file is part of project myscreen.
 
@@ -34,7 +34,7 @@ char line[LINE_SIZE + 1];
 int stats_loop; /* While TRUE, display stats */
 int main_loop;
 
-/* Struct at least used by uptime, processes, RAM, SWAP, and  loadaverage modules */
+/* Struct used by uptime, processes, RAM, SWAP, and  loadaverage modules */
 struct sysinfo si;
 
 const char * empty_string = "";
@@ -56,7 +56,7 @@ void get_sysinfo() {
 void display_module_stats(int module_idx){
 	IFDEBUG(printf("(%d) [%s]\n", module_idx, main_mod[module_idx]()););
 	IFNDEBUG((void)fputs(modules_color[module_idx], stdout);
-		 (void)fputs(main_mod[module_idx](), stdout);)
+	(void)fputs(main_mod[module_idx](), stdout);)
 }
 
 /*
@@ -131,7 +131,7 @@ static void loop_stat(int nb_modules){
 			update_stats(nb_modules);
 		}
 		else {
-			for(cpt=0;cpt<nb_modules;cpt++){
+			for(cpt=0; cpt<nb_modules; cpt++){
 				(void) display_module_stats(current_conf[cpt]);
 			}
 		}
@@ -168,7 +168,7 @@ int main (/*int argc, char ** argv*/)
 			/* stats_loop become false when receiving signal */
 			stats_loop=TRUE;
 
-			/* current_conf initialisation and modules initiatlisation calls */
+			/* current_conf and modules initialisation */
 			DEBUG_INFO("Reading configuration file")
 			nb_modules = get_configuration();
 

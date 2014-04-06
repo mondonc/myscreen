@@ -55,7 +55,7 @@
 #define IFNDEBUG(instruction); instruction
 #endif
 
-/* ONESHOT MACROS */
+/* ONESHOT MACROS (used by continuous intergration) */
 #ifdef ONESHOT
 #define IFONESHOT(instruction); instruction
 #else
