@@ -57,7 +57,7 @@ static msg_queue_t self; /* the queue itself */
 */
 static void _init_msg_queue(void)
 {
-  IFDEBUG_PRINT("#DEBUG: initialize the messages queue\n");
+  DEBUG_INFO("initialize the messages queue");
   memset(&self, 0, sizeof(self));
   init = true;
 }
@@ -86,7 +86,7 @@ static msg_t *_push()
     }
   else
     {
-      IFDEBUG_PRINT("#DEBUG: msg_queue is full: the last message "
+      DEBUG_INFO("msg_queue is full: the last message "
 		    "could not be pushed\n");
     }
   return msg;

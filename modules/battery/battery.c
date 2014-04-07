@@ -1,4 +1,4 @@
-/* Copyright 2009-2013 Clément Mondon <clement.mondon@gmail.com>
+/* Copyright 2009-2014 Clément Mondon <clement.mondon@gmail.com>
 
 	This file is part of project myscreen.
 
@@ -46,16 +46,16 @@ static int calculate_battery(char * battery_result, const char * battery){
 	unsigned int percentage;
 
 	status = "";
-	charge_full=0;
-	charge_now=0;
+	charge_full = 0;
+	charge_now = 0;
 
 	assert(BATTERY_RESULT_SIZE>=2);
 
 	/*Open file*/
 	f = fopen(battery, "r");
 	if (f == NULL){
-		IFDEBUG_PRINT("I can't read battery file");
-		battery_result[0]='\0';
+		DEBUG_INFO("I can't read battery file");
+		battery_result[0] = '\0';
 		return 0;
 	}
 
@@ -68,25 +68,25 @@ static int calculate_battery(char * battery_result, const char * battery){
 			assert(strstr(line, "=") != NULL);
 
 			status = line;
-			while ( ( *(status++) ) != '=' );
+			while ((*(status++)) != '=');
 
 			assert(strlen(POWER_DISCHARGING) == POWER_DISCHARGING_LEN);
 			assert(strlen(POWER_CHARGING) == POWER_CHARGING_LEN);
 			assert(strlen(POWER_FULL) == POWER_FULL_LEN);
 
 			if (!strncmp(status, POWER_DISCHARGING, POWER_DISCHARGING_LEN)){
-				battery_result[0]='_';				
+				battery_result[0] = '_';				
 
 			} else 	if (!strncmp(status, POWER_CHARGING, POWER_CHARGING_LEN)){
-				battery_result[0]='~';				
+				battery_result[0] = '~';				
 
 			}	else 	if (!strncmp(status, POWER_FULL, POWER_FULL_LEN)){ /*If full, don't calculate percentage*/
 
 				assert(BATTERY_RESULT_SIZE >= 3);
 
-				battery_result[0]='"';				
-				battery_result[1]=' ';				
-				battery_result[2]='\0';
+				battery_result[0] = '"';				
+				battery_result[1] = ' ';				
+				battery_result[2] = '\0';
 
 				assert(strlen(battery_result) <= BATTERY_RESULT_SIZE);
 
@@ -97,15 +97,15 @@ static int calculate_battery(char * battery_result, const char * battery){
 				return 2;
 				
 			} else {
-				IFDEBUG_PRINT("Can't read battery status");
-				battery_result[0]='?';				
+				DEBUG_INFO("Can't read battery status");
+				battery_result[0] = '?';				
 			}
 		}
 
 		/*Determine charge_full*/
 		if (charge_full == 0){
 			cpt = 0;
-			while ( cpt < POWER_SUPPLY_NB ) {
+			while (cpt < POWER_SUPPLY_NB) {
 				if (strncmp(line, power_supply_charge_full[cpt], power_supply_charge_full_len[cpt]) == 0){
 					charge_full = strtol((line + power_supply_charge_full_len[cpt]), NULL, 10);
 					break ;
@@ -117,10 +117,10 @@ static int calculate_battery(char * battery_result, const char * battery){
 		/*Determine charge_now*/
 		if (charge_now == 0) {
 			cpt = 0;
-			while ( cpt < POWER_SUPPLY_NB ) {
+			while (cpt < POWER_SUPPLY_NB) {
 				if (strncmp(line, power_supply_charge_now[cpt], power_supply_charge_now_len[cpt]) == 0){
 					charge_now = strtol((line + power_supply_charge_now_len[cpt]), NULL, 10);
-					break ;
+					break;
 				}
 				cpt++;
 			}
@@ -134,17 +134,17 @@ static int calculate_battery(char * battery_result, const char * battery){
 
 	/*Calculate Rate*/
 	if (charge_full == 0 || charge_now == 0){
-		assert(BATTERY_RESULT_SIZE>2)
-		IFDEBUG_PRINT("Can't read values of battery");
-		battery_result[1]=' ';
-		battery_result[2]='\0';
+		assert(BATTERY_RESULT_SIZE > 2)
+		DEBUG_INFO("Can't read values of battery");
+		battery_result[1] = ' ';
+		battery_result[2] = '\0';
 		return 2;
 	}
 
-	assert(BATTERY_RESULT_SIZE>1);
-	battery_result[1]='|';
-	percentage= (unsigned int) (( ((float)charge_now)  / charge_full) * 100);
-	assert(BATTERY_RESULT_SIZE>=3+5);
+	assert(BATTERY_RESULT_SIZE > 1);
+	battery_result[1] = '|';
+	percentage = (unsigned int) (( ((float)charge_now)  / charge_full) * 100);
+	assert(BATTERY_RESULT_SIZE >= 3 + 5);
 	return 2 + myprint_percentage_s(&(battery_result[2]), percentage);
 }
 
@@ -156,27 +156,27 @@ char * battery(){
 	char * ptr;
 
 	if (time_cpt == 0){
-		battery_result[0]='\0';
+		battery_result[0] = '\0';
 		ptr = battery_result; 
 		ptr += calculate_battery(ptr, PROC_BATTERY0);
 		ptr += calculate_battery(ptr, PROC_BATTERY1);
 		ptr += calculate_battery(ptr, PROC_BATTERY2);
 
-		assert(ptr-battery_result<BATTERY_RESULT_SIZE);
+		assert(ptr - battery_result < BATTERY_RESULT_SIZE);
 
 	} else if (time_cpt == TIME_BATTERY) {
-		time_cpt=-1;
+		time_cpt = -1;
 	} 
 	time_cpt++;
 	return battery_result;
 }
 
 char * init_battery(char * UNUSED(conf_line)){
-	time_cpt=0;
+	time_cpt = 0;
 	return "Battery ";
 }
 
 void exit_battery(){
-
+/* no code */
 }
 

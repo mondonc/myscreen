@@ -1,4 +1,4 @@
-/*Copyright 2009,2010,2011 Clément Mondon <clement.mondon@gmail.com>
+/*Copyright 2009-2014 Clément Mondon <clement.mondon@gmail.com>
 
   This file is part of project myscreen.
 
@@ -26,7 +26,6 @@
 #include <myscreen-stats.h>
 
 #define PROC_STAT "/proc/stat"
-/*#define PROC_CPUINFO "/proc/cpuinfo"*/ /*old */
 #define COLOR_CPU RED BOLD
 #define NB_CPU_MAX 8
 #define CPU_RESULT_SIZE (4 + (NB_CPU_MAX * 4 ) + 4)

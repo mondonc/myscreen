@@ -39,18 +39,18 @@
 #ifdef DEBUG
 #define IFDEBUG(instruction); instruction
 #define IFDEBUG_PRINT(chaine); fputs(chaine, stdout);
-#define DEBUG_INFO(chaine) fputs("#INFO: ", stdout); printf(chaine); fputs("\n", stdout);
-#define DEBUG_WARNING(chaine) fputs("#WARNING: ", stdout); printf(chaine); fputs("\n", stdout);
-#define DEBUG_ERROR(chaine) fputs("#ERROR: ", stdout); printf(chaine); fputs("\n", stdout);
+#define DEBUG_INFO(chaine); fputs("#INFO: ", stdout); printf(chaine); fputs("\n", stdout);
+#define DEBUG_WARNING(chaine); fputs("#WARNING: ", stdout); printf(chaine); fputs("\n", stdout);
+#define DEBUG_ERROR(chaine); fputs("#ERROR: ", stdout); printf(chaine); fputs("\n", stdout);
 #define DEBUG_MODULE(chaine,index,name,conf) printf("#MODULE %d (%s):", index, name); printf(chaine,conf); fputs("\n", stdout);
 #define IFNDEBUG(instruction); /*no code*/
 #else
 #define IFDEBUG(instruction); /*no code*/
 #define IFDEBUG_PRINT(chaine); /*no code*/
-#define DEBUG_INFO(chaine) /* no code */
-#define DEBUG_WARNING(chaine) /* no code */
-#define DEBUG_ERROR(chaine) /* no code */
-#define DEBUG_MODULE(chaine,index,name,conf) /* no code */
+#define DEBUG_INFO(chaine); /* no code */
+#define DEBUG_WARNING(chaine); /* no code */
+#define DEBUG_ERROR(chaine); /* no code */
+#define DEBUG_MODULE(chaine,index,name,conf); /* no code */
 #define IFNDEBUG(instruction); instruction
 #endif
 

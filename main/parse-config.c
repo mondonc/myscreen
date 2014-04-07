@@ -209,7 +209,7 @@ int read_configuration_file(){
 int get_default_configuration(){
 	int nb_modules;
 
-	IFDEBUG(printf("Default configuration : enable all modules"););
+	DEBUG_WARNING("Default configuration : enable all modules");
 	/* Enable all modules */
 	for(nb_modules=0;nb_modules < NB_MODULES_MAX;nb_modules++ ) {
 		init_module(nb_modules,nb_modules,"\0");
