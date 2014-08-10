@@ -94,8 +94,6 @@
 
 #define TIME 2 /* Main loop time ; Time between 2 stats generation */
 
-#define COLOR_END "\005{-}"
-
 #define TRUE 1
 #define FALSE 0
 
