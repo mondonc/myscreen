@@ -58,7 +58,7 @@ void search_home(char ** conf_home){
 
 		DEBUG_WARNING("I can't read HOME variable")
 		(*conf_home) = malloc(1);
-		conf_home[0]='\0';
+		(*conf_home)[0]='\0';
 	} 
 	else {
 		unsigned int home_len;
