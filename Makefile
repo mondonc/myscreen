@@ -26,6 +26,19 @@ CFLAGS += -D_XOPEN_SOURCE=500
 LDFLAGS=
 CPPFLAGS=
 
+THIS_MAKEFILE := Makefile
+
+# MultiArch support (32/64)
+ifdef DEB_HOST_ARCH_BITS
+	ifeq ($(DEB_HOST_ARCH_BITS),32)
+		MARCH=-m$(DEB_HOST_ARCH_BITS)
+	endif
+	ifeq ($(DEB_HOST_ARCH_BITS),66)
+		MARCH=-m$(DEB_HOST_ARCH_BITS)
+	endif
+endif
+
+# Modules support
 MODULES_SRC := $(foreach dir, $(MODULES) , $(wildcard modules/$(dir)/*.c) )   
 MODULES_OBJ := $(MODULES_SRC:%.c=%.o)
 MAIN_SRC = main/myscreen-stats.c main/tools.c main/parse-config.c main/proc_tools.c main/msg_queue.c
