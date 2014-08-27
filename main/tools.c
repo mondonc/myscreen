@@ -1,7 +1,7 @@
-#include <myscreen-stats.h> 
+#include <myscreen-stats.h>
 #include <parse-config.h>
-#include <stdio.h> 
-#include <stdlib.h> 
+#include <stdio.h>
+#include <stdlib.h>
 #include <sys/types.h>
 #include <sys/types.h>
 #include <stdio.h>
@@ -31,8 +31,8 @@ static struct  sigaction usr1, usr2, cont;
 /* ERROR MANAGEMENT */
 /**********************/
 
-/* 
- * Display error and exit if fatal == TRUE 
+/*
+ * Display error and exit if fatal == TRUE
  */
 void error(const char * err, unsigned short fatal){
 
@@ -47,23 +47,24 @@ void error(const char * err, unsigned short fatal){
 /* STRINGS MANAGEMENT */
 /**********************/
 
-/* 
+/*
  * Like strncpy, but clear string also (without space, tab, and \n )
  */
 void strncpyclr(char * dest, const char * src, unsigned int len){
-	
+
 	unsigned int s, d;
 	d = 0;
-	for (s = 0 ; s < strlen(src) && s < len ; s++){
-		if (src[s] != ' ' && src[s] != '\t' && src[s] != '\n'){
-			dest[d++] = src[s];
-		}
+    for (s = 0 ; s < strlen(src) && s < len ; s++){
+		if (src[s] != ' ' || (src[s+1] != ' ' &&  s != 0 )){
+            dest[d++] = src[s];
+        } else if (src[s] == '\t' || src[s] == '\n'){
+	        dest[d++] = ' ';
+	    }
 	}
-
 }
 
-/* 
- * Clear given string (without space, tab, and \n ) 
+/*
+ * Clear given string (without space, tab, and \n )
  */
 void strnclr(char * src, unsigned int len){
 	strncpyclr(src, (const char *) src, len);
@@ -85,9 +86,9 @@ int myprint_percentage(char * result, unsigned short percentage){
     error("Percentage",FALSE);
 
   } else {
-    
+
     if (percentage>99){
-      result[cpt++]= '0' +percentage/100; 
+      result[cpt++]= '0' +percentage/100;
       percentage=percentage%100;
     }
     result[cpt++]='0' +percentage/10;
@@ -144,8 +145,8 @@ int myprint_percentage_s(char * result, unsigned short percentage){
 /*********************/
 
 
-/* 
- * Install sigaction function 
+/*
+ * Install sigaction function
  */
 void signal_install(struct  sigaction * sa, int signum, handler_t * handler) {
   assert(sa!=NULL);
@@ -158,7 +159,7 @@ void signal_install(struct  sigaction * sa, int signum, handler_t * handler) {
 }
 
 /* sigusr1_handler : restart myscreen-stats */
-void sigusr1_handler(int UNUSED(sig)){   
+void sigusr1_handler(int UNUSED(sig)){
   stats_loop=FALSE;
   main_loop=TRUE;
   printf("Restarting ...\n");
@@ -167,7 +168,7 @@ void sigusr1_handler(int UNUSED(sig)){
 }
 
 /* sigusr2_handler : stop / restart  myscreen-stats */
-void sigusr2_handler(int UNUSED(sig)){   
+void sigusr2_handler(int UNUSED(sig)){
 
   stats_loop=FALSE;
   main_loop=FALSE;

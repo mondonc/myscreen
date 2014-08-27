@@ -367,12 +367,12 @@ char * init_network(char * confline){
 		/* Build result string */
 		strcpy(network_result," configured to : ");
 	}
-	no_activity_count=0;
+	no_activity_count = 0;
 	/* Build "no activity" string */
 	assert(strlen(" no activity on ")+INTERFACE_SIZE+2 <= NETWORK_RESULT_SIZE);
 	strcpy(no_activity," no activity on ");
-	strcat(no_activity,interface);
-	strcat(no_activity, " ");
+	strncat(no_activity,interface,INTERFACE_SIZE);
+	strncat(no_activity, " ", 1);
 
 	assert(strlen("selected device: ")+INTERFACE_SIZE+2 <= NETWORK_RESULT_SIZE);
 	assert(strlen(" configured to : ")+INTERFACE_SIZE+2 <= NETWORK_RESULT_SIZE);
