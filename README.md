@@ -5,7 +5,7 @@ Overview
 --------
 
 MyScreen is a free project released under the terms of the GNU General
-Public License (GPL). It is based on
+Public License (GPL), using
 [GNU/Screen](http://fr.wikipedia.org/wiki/GNU_Screen), a full-screen
 window manager that multiplexes a physical terminal between several
 processes.
