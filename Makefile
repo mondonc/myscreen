@@ -10,7 +10,7 @@ TARGET := myscreen-stats
 VERSION := 0.9
 
 # Used to disable compilation of specific modules, and define module's order
-MODULES := users uptime network battery wifi reboot loadaverage processes cpu sensor ram swap disks_access disks_usage
+MODULES := users uptime network battery wifi reboot loadaverage processes cpu ram swap disks_access disks_usage
 
 # External tools
 RM=rm -f
